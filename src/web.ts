@@ -9,10 +9,13 @@ export class CapacitorHealthkitWeb extends WebPlugin implements CapacitorHealthk
     });
   }
 
-  async getDistance(): Promise<any> {
+  async requestAuthorization(): Promise<any> {
     throw new Error("Method not implemented.");
   }
-  async authorize(): Promise<any> {
+  async isAvailable(): Promise<any> {
+    throw new Error("Method not implemented.");
+  }
+  async queryHKitSampleType(): Promise<any> {
     throw new Error("Method not implemented.");
   }
 
