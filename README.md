@@ -135,10 +135,10 @@ Gets all the data points of a certain data type within a certain time window.
 queryHKitSampleType(queryOptions, successCallback, errorCallback)
 ```
 
-queryOption example:
+queryOptions example:
 ```
 const endDate = new Date();
-queryOption = {
+queryOptions = {
       _sampleName: ’stepCount’, // String
       _startDate: '2019/07/01', // String
       _endDate: endDate, // Date
@@ -281,7 +281,7 @@ Theo Creach for Ad Scientiam
 
 ## Versioning
 
-Version 0.0.5
+Version 0.0.6
 
 ## Authors
 
