@@ -39,7 +39,7 @@ in your .ts file add this:
 const { CapacitorHealthkit } = Plugins;
 ```
 
-and then you can create async functions for example like this :
+and then you can create async functions for example like this:
 
 ```
 async queryHKitSampleType(sampleName: string) {
@@ -96,7 +96,7 @@ requestAuthorization(datatypes, successCallback, errorCallback)
 }
 ```
 
-Example :
+Example:
 ```
 let result = await CapacitorHealthkit.requestAuthorization({
       all: ["calories", "stairs", "activity"], // ask for Read & Write permission
@@ -112,7 +112,7 @@ The datatype _activity_ also includes sleep. If you want to get authorization 
 
 
 **Data type for requestAuthorization:**
-| Data type | Unit | HealthKit equivalent |
+| Data type | Unit | What you actually ask from HealthKit with this data type |
 | --- | --- | --- |
 | steps | count | HKQuantityTypeIdentifierStepCount |
 | stairs | count| HKQuantityTypeIdentifierFlightsClimbed |
@@ -135,15 +135,15 @@ Gets all the data points of a certain data type within a certain time window.
 queryHKitSampleType(queryOptions, successCallback, errorCallback)
 ```
 
-queryOption example :
+queryOption example:
 ```
 const endDate = new Date();
-{
+queryOption = {
       _sampleName: ’stepCount’, // String
       _startDate: '2019/07/01', // String
       _endDate: endDate, // Date
       _limit: 0 // Int
-}
+};
 ```
 
 **Sample name available for queries:**
@@ -160,7 +160,7 @@ const endDate = new Date();
 | workoutType | activity | HKWorkoutTypeIdentifier |
 
 
-Example function in **Angular** :
+Example function in **Angular**:
 ```
 async queryHKitSampleType(sampleName: string) {
     // sample name, start date (string), end Date (date), limit (0 to infinite)
@@ -176,7 +176,7 @@ async queryHKitSampleType(sampleName: string) {
   }
 ```
 
-Careful : use `_` before names : `_startDate`
+Careful : use `_` before names: `_startDate`
 
 * _startDate: {type: Date}, start date from which to get data
 * _endDate: {type: Date}, end data to which to get the data
@@ -187,14 +187,14 @@ Careful : use `_` before names : `_startDate`
 * errorCallback: {type: function(err)}, called if something went wrong, err contains a textual description of the problem
 
 
-**iOS quirks**
+**iOS quirks:**
 * Limit is set to unlimited by default _(if you insert 0)_
 * Datapoints are ordered in an descending fashion (from newer to older). You can revert this behaviour by adding ascending: true to your query object.
 * HealthKit does not calculate active and basal calories - these must be inputted from an app
 * HealthKit does not detect specific activities - these must be inputted from an app
 * When querying for activities, only events whose startDate and endDate are both in the query range will be returned.
 
-**Result of query (array) :**
+**Result of query (array):**
 ```
 {
     "countReturn": result.count, // number of results
@@ -214,9 +214,9 @@ Careful : use `_` before names : `_startDate`
 * uuid: (string) the unique identifier of that measurement
 
 
-And output :
+**output content:**
 
-* If quantity type output contains :
+* If quantity type output contains:
 
 ```
 - uuid (string)
@@ -224,7 +224,7 @@ And output :
 - unitName (string)
 - startDate (ISO8601 String)
 - endDate (ISO8601 String)
-- duration (double ou INT jsais pas)
+- duration (double)
 - source (string)
 - sourceBundleId (string)
 ```
@@ -235,14 +235,14 @@ And output :
 - uuid (string)
 - startDate (ISO8601 String)
 - endDate (ISO8601 String)
-- duration (double ou INT jsais pas)
+- duration (double)
 - source (string)
 - sourceBundleId (string)
-- "workoutActivityId (Int)
-- "totalEnergyBurned (kilocalorie)
-- "totalDistance (meter)
-- "totalFlightsClimbed (count)
-- "totalSwimmingStrokeCount (count)
+- workoutActivityId (Int)
+- totalEnergyBurned (kilocalorie)
+- totalDistance (meter)
+- totalFlightsClimbed (count)
+- totalSwimmingStrokeCount (count)
 ```
 
 _If data = -1 => no data collected_
@@ -253,7 +253,7 @@ _If data = -1 => no data collected_
 - uuid (string)
 - startDate (ISO8601 String)
 - endDate (ISO8601 String)
-- duration (double ou INT jsais pas)
+- duration (double)
 - source (string)
 - sourceBundleId (string)
 ```
@@ -281,7 +281,7 @@ Theo Creach for Ad Scientiam
 
 ## Versioning
 
-Version 0.0.4
+Version 0.0.5
 
 ## Authors
 
