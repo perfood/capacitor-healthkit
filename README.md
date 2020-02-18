@@ -2,6 +2,8 @@
 
 :heart: Capacitor plugin to retrieve data from HealthKit :heart:
 
+Disclaimer : _for now only some of the HK data base, in the future the retrieve base will be bigger !_
+
 ## Getting Started
 
 ### Prerequisites
@@ -29,9 +31,7 @@ Then
 npx cap update
 ```
 
-Then
-
-**if you use Ionic or Angular, here a example setup:**
+And  **if you use Ionic or Angular, here a example setup:**
 
 in your .ts file add this:
 
@@ -56,7 +56,7 @@ async queryHKitSampleType(sampleName: string) {
 }
 ```
 
-so you can use the plugin with the call `CapacitorHealthkit.queryHKitSampleType(...`
+so you can use the plugin for example with the call `CapacitorHealthkit.queryHKitSampleType(...`
 
 And you're all set ! :+1:
 
@@ -64,11 +64,10 @@ And you're all set ! :+1:
 
 ## Methods
 
-<br/>
 
 ### isAvailable()
 
-Tells if HealthKit are available.
+Tells if HealthKit is available on the device.
 
 ```
 isAvailable(successCallback, errorCallback)
@@ -112,7 +111,7 @@ let result = await CapacitorHealthkit.requestAuthorization({
 The datatype _activity_ also includes sleep. If you want to get authorization only for workouts, you can specify workouts as datatype, but be aware that this is only availabe in iOS.
 
 
-Data type for requestAuthorization
+**Data type for requestAuthorization:**
 | Data type | Unit | HealthKit equivalent |
 | --- | --- | --- |
 | steps | count | HKQuantityTypeIdentifierStepCount |
@@ -126,7 +125,7 @@ Data type for requestAuthorization
 
 ### queryHKitSampleType()
 
-**Please make sure that you called correct requestAuthorization for HealthKit sample you want before use this method** :shipit:
+**_Please make sure that you called correct requestAuthorization for HealthKit sample you want before use this method_** :shipit:
 
 Gets all the data points of a certain data type within a certain time window.
 
@@ -147,7 +146,7 @@ const endDate = new Date();
 }
 ```
 
-Sample name available for queries
+**Sample name available for queries:**
 | Sample name for query | Request Auth Needed  | HealthKit equivalent |
 | --- | --- | --- |
 | stepCount | steps | HKQuantityTypeIdentifierStepCount |
@@ -161,7 +160,7 @@ Sample name available for queries
 | workoutType | activity | HKWorkoutTypeIdentifier |
 
 
-EXAMPLE FUNCTION in Angular :
+Example function in **Angular** :
 ```
 async queryHKitSampleType(sampleName: string) {
     // sample name, start date (string), end Date (date), limit (0 to infinite)
@@ -177,11 +176,12 @@ async queryHKitSampleType(sampleName: string) {
   }
 ```
 
+Careful : use `_` before names : `_startDate`
 
-* startDate: {type: Date}, start date from which to get data
-* endDate: {type: Date}, end data to which to get the data
-* dataType: {type: String}, the data type to be queried (see above)
-* limit: {type: integer}, optional, sets a maximum number of returned values
+* _startDate: {type: Date}, start date from which to get data
+* _endDate: {type: Date}, end data to which to get the data
+* _sampleName: {type: String}, the data type to be queried (see above)
+* _limit: {type: integer}, optional, sets a maximum number of returned values
 
 * successCallback: {type: function(data) }, called if all OK, data contains the result of the query in the form of an array (detail below)
 * errorCallback: {type: function(err)}, called if something went wrong, err contains a textual description of the problem
@@ -197,12 +197,14 @@ async queryHKitSampleType(sampleName: string) {
 **Result of query (array) :**
 ```
 {
-    ‘’countReturn’’: result.count, // number of results
-    ‘resultDate’: output // output data in result of query
+    "countReturn": result.count, // number of results
+    "resultDate": output // output data in result of query
 }
 ```
 
-Returned objects (output) contain a set of fixed fields:
+**countReturn** returns the number of results
+
+**output** contain a set of fixed fields:
 * startDate: {type: Date} a date indicating when the data point starts
 * endDate: {type: Date} a date indicating when the data point ends
 * sourceBundleId: {type: String} the identifier of the app that produced the data
@@ -213,7 +215,9 @@ Returned objects (output) contain a set of fixed fields:
 
 
 And output :
-If quantity type output contains :
+
+* If quantity type output contains :
+
 ```
 - uuid (string)
 - value (double)
@@ -225,7 +229,8 @@ If quantity type output contains :
 - sourceBundleId (string)
 ```
 
-If Workout type output contains :
+* If Workout type output contains :
+
 ```
 - uuid (string)
 - startDate (ISO8601 String)
@@ -239,9 +244,11 @@ If Workout type output contains :
 - "totalFlightsClimbed (count)
 - "totalSwimmingStrokeCount (count)
 ```
+
 _If data = -1 => no data collected_
- 
-If Sleep type output contains :
+
+* If Sleep type output contains :
+
 ```
 - uuid (string)
 - startDate (ISO8601 String)
@@ -257,6 +264,7 @@ Please contact me (Theo) :speech_balloon:
 
 ## Whats coming soon ?
 
+* Add more data compatibility (nutrition etc)
 * Get aggregated data from HK
 * Store data in HK
 * Delete data in HK
@@ -273,7 +281,7 @@ Theo Creach for Ad Scientiam
 
 ## Versioning
 
-Version 0.0.2
+Version 0.0.4
 
 ## Authors
 
