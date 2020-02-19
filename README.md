@@ -48,10 +48,10 @@ async queryHKitSampleType(sampleName: string) {
   this.dataName = sampleName;
   const endDate = new Date();
   this.data = await CapacitorHealthkit.queryHKitSampleType({
-    _sampleName: sampleName,
-    _startDate: '2019/07/01',
-    _endDate: endDate,
-    _limit: 0
+    sampleName: sampleName,
+    startDate: "2019/07/01",
+    endDate: endDate,
+    limit: 0
   });
 }
 ```
@@ -77,6 +77,61 @@ isAvailable(successCallback, errorCallback)
 
 <br/>
 
+### isEditionAuthorized()
+
+Tells if HealthKit is authorized for edit data.
+
+```
+isEditionAuthorized(sampleName, successCallback, errorCallback)
+```
+* sampleName: {type: String}, a string of sampleName
+Example:
+``` 
+{
+    sampleName : "stepCount"
+}
+```
+
+* successCallback: `{type: function(available)}`, if available a true is passed as argument, false otherwise
+* errorCallback: `{type: function(err)`, called if something went wrong, err contains a textual description of the problem
+
+**Sample name available for this query:**
+| Sample name for query | Request Auth Needed  | HealthKit equivalent |
+| --- | --- | --- |
+| stepCount | steps | HKQuantityTypeIdentifierStepCount |
+| flightsClimbed | stairs | HKQuantityTypeIdentifierFlightsClimbed |
+| distanceWalkingRunning | distance | HKQuantityTypeIdentifierDistanceWalkingRunning |
+| distanceCycling | distance | HKQuantityTypeIdentifierDistanceCycling |
+| appleExerciseTime | appleExerciseTime | HKQuantityTypeIdentifierAppleExerciseTime |
+| activeEnergyBurned | calories | HKQuantityTypeIdentifierActiveEnergyBurned |
+| basalEnergyBurned | calories | HKQuantityTypeIdentifierBasalEnergyBurned |
+| sleepAnalysis | activity | HKCategoryTypeIdentifierSleepAnalysis |
+| workoutType | activity | HKWorkoutTypeIdentifier |
+
+<br/>
+
+### multipleIsEditionAuthorized()
+
+Tells if HealthKit is authorized for edit data (you can ask in this method for multiple sampleName)
+
+```
+isEditionAuthorized(sampleNames, successCallback, errorCallback)
+```
+* sampleNames: {type: [String]}, a list of strings of sampleNames
+Example:
+``` 
+{
+    sampleNames : ["stepCount", "flightsClimbed"]
+}
+```
+
+* successCallback: `{type: function(available)}`, if available a true is passed as argument, false otherwise
+* errorCallback: `{type: function(err)`, called if something went wrong, err contains a textual description of the problem
+
+**Same sample names available as isEditionAuthorized()**
+
+<br/>
+
 ### requestAuthorization()
 
 Requests read and write access to a set of data types. It is recommendable to always explain why the app needs access to the data before asking the user to authorize it.
@@ -90,9 +145,9 @@ requestAuthorization(datatypes, successCallback, errorCallback)
 * datatypes: {type: Mixed array}, a list of data types you want to be granted access to. You can also specify read or write only permissions.
 ``` 
 {
-    all : [‘’] // Read & Write permission
-    read : ['steps'], // Read only permission
-    write : ['height', 'weight'] // Write only permission
+    all : [""] // Read & Write permission
+    read : ["steps"], // Read only permission
+    write : ["height", "weight"] // Write only permission
 }
 ```
 
@@ -139,10 +194,10 @@ queryOptions example:
 ```
 const endDate = new Date();
 queryOptions = {
-      _sampleName: ’stepCount’, // String
-      _startDate: '2019/07/01', // String
-      _endDate: endDate, // Date
-      _limit: 0 // Int
+      sampleName: "stepCount", // String
+      startDate: "2019/07/01", // String
+      endDate: endDate, // Date
+      limit: 0 // Int
 };
 ```
 
@@ -168,20 +223,18 @@ async queryHKitSampleType(sampleName: string) {
     this.dataName = sampleName;
     const endDate = new Date();
     this.data = await CapacitorHealthkit.queryHKitSampleType({
-      _sampleName: sampleName,
-      _startDate: '2019/07/01',
-      _endDate: endDate,
-      _limit: 0
+      sampleName: sampleName,
+      startDate: "2019/07/01",
+      endDate: endDate,
+      limit: 0
     });
   }
 ```
 
-Careful : use `_` before names: `_startDate`
-
-* _startDate: {type: Date}, start date from which to get data
-* _endDate: {type: Date}, end data to which to get the data
-* _sampleName: {type: String}, the data type to be queried (see above)
-* _limit: {type: integer}, optional, sets a maximum number of returned values
+* startDate: {type: Date}, start date from which to get data
+* endDate: {type: Date}, end data to which to get the data
+* sampleName: {type: String}, the data type to be queried (see above)
+* limit: {type: integer}, optional, sets a maximum number of returned values
 
 * successCallback: {type: function(data) }, called if all OK, data contains the result of the query in the form of an array (detail below)
 * errorCallback: {type: function(err)}, called if something went wrong, err contains a textual description of the problem
@@ -258,6 +311,37 @@ _If data = -1 => no data collected_
 - sourceBundleId (string)
 ```
 
+<br/>
+
+### multipleQueryHKitSampleType()
+
+**_Please make sure that you called correct requestAuthorization for HealthKit sample you want before use this method_** :shipit:
+
+Gets all the data points of multiple  data types within a certain time window.
+
+Exact same query as queryHKitSampleType() but return a large object with all queries in one.
+
+**Warning:** if the time span is big, it can generate long arrays! :cold_sweat:
+
+```
+multipleQueryHKitSampleType(queryOptions, successCallback, errorCallback)
+```
+
+queryOptions example:
+```
+const endDate = new Date();
+queryOptions = {
+      sampleNames: ["stepCount", "workoutType"], // String
+      startDate: "2019/07/01", // String
+      endDate: endDate, // Date
+      limit: 0 // Int
+};
+```
+
+result will look like : [String: [String: Any]]
+First string is sample name, then [String: Any] is exactly like return of queryHKitSampleType() method
+
+
 ## Questions ?
 
 Please contact me (Theo) :speech_balloon:
@@ -279,9 +363,11 @@ Please contact me (Theo) :speech_balloon:
 
 Theo Creach for Ad Scientiam
 
+Acknowledgements : Timothée Bilodeau - :sunglasses: *iOS Developer* - [Linkedin](https://www.linkedin.com/in/timoth%E9e-bilodeau-03080ab2/)
+
 ## Versioning
 
-Version 0.0.6
+Version 0.0.7
 
 ## Authors
 

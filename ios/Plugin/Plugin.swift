@@ -35,6 +35,107 @@ public class CapacitorHealthkit: CAPPlugin {
             call.reject("Health data not available")
         }
     }
+    
+    @objc func isEditionAuthorized(_ call: CAPPluginCall) {
+        
+        guard let sampleName = call.options["sampleName"] as? String else {
+            call.reject("Must provide all")
+            return
+        }
+        
+        var sampleType: HKSampleType? = nil;
+        
+        switch sampleName {
+            case "stepCount":
+                sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.stepCount)!;
+            case "flightsClimbed":
+                sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.flightsClimbed)!;
+            case "appleExerciseTime":
+                sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.appleExerciseTime)!;
+            case "activeEnergyBurned":
+                sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.activeEnergyBurned)!;
+            case "basalEnergyBurned":
+                sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.basalEnergyBurned)!;
+            case "distanceWalkingRunning":
+                sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.distanceWalkingRunning)!;
+            case "distanceCycling":
+                sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.distanceCycling)!;
+            case "sleepAnalysis":
+                sampleType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!;
+            case "workoutType":
+                sampleType = HKWorkoutType.workoutType();
+        default:
+            print("cannot match sample name");
+            call.reject("Error in sample name");
+            return
+        }
+        
+        
+        // Check for access to your HealthKit Type(s).
+        if (healthStore.authorizationStatus(for: sampleType!) == .sharingAuthorized) {
+            // print("Permission Granted to Access data")
+            call.resolve()
+        } else {
+            // print("Permission Denied to Access data")
+            call.reject("Permission Denied to Access data");
+            return
+        }
+    }
+    
+    // multiple avec tableau de string
+    
+    @objc func multipleIsEditionAuthorized(_ call: CAPPluginCall) {
+           
+           guard let sampleNames = call.options["sampleNames"] as? [String] else {
+               call.reject("Must provide sampleNames")
+               return
+           }
+           
+           // var sampleType: HKSampleType? = nil;
+        
+            for sampleName in sampleNames {
+                
+                    var sampleType: HKSampleType? = nil;
+           
+                   switch sampleName {
+                       case "stepCount":
+                           sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.stepCount)!;
+                       case "flightsClimbed":
+                           sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.flightsClimbed)!;
+                       case "appleExerciseTime":
+                           sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.appleExerciseTime)!;
+                       case "activeEnergyBurned":
+                           sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.activeEnergyBurned)!;
+                       case "basalEnergyBurned":
+                           sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.basalEnergyBurned)!;
+                       case "distanceWalkingRunning":
+                           sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.distanceWalkingRunning)!;
+                       case "distanceCycling":
+                           sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.distanceCycling)!;
+                       case "sleepAnalysis":
+                           sampleType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!;
+                       case "workoutType":
+                           sampleType = HKWorkoutType.workoutType();
+                   default:
+                       print("cannot match sample name");
+                       call.reject("Error in sample name");
+                       return
+                   }
+                   
+                   
+                   // Check for access to your HealthKit Type(s).
+                   if (healthStore.authorizationStatus(for: sampleType!) == .sharingAuthorized) {
+                       // print("Permission Granted to Access data")
+                   } else {
+                       // print("Permission Denied to Access data")
+                       call.reject("Permission Denied to Access data");
+                       return
+                   }
+            }
+        
+            call.resolve()
+       }
+       
 
     
     // demande les autorisations d'accéder au HK
@@ -181,20 +282,20 @@ public class CapacitorHealthkit: CAPPlugin {
     
     @objc func queryHKitSampleType(_ call: CAPPluginCall) {
         
-        guard let _sampleName = call.options["_sampleName"] as? String else {
-            call.reject("Must provide _sampleName")
+        guard let _sampleName = call.options["sampleName"] as? String else {
+            call.reject("Must provide sampleName")
             return
         }
-        guard let _startDate = call.options["_startDate"] as? String else {
-            call.reject("Must provide _startDate")
+        guard let _startDate = call.options["startDate"] as? String else {
+            call.reject("Must provide startDate")
             return
         }
-        guard let _endDate = call.options["_endDate"] as? Date else {
-            call.reject("Must provide _endDate")
+        guard let _endDate = call.options["endDate"] as? Date else {
+            call.reject("Must provide endDate")
             return
         }
-        guard let _limit = call.options["_limit"] as? Int else {
-            call.reject("Must provide _limit")
+        guard let _limit = call.options["limit"] as? Int else {
+            call.reject("Must provide limit")
             return
         }
         
@@ -239,7 +340,22 @@ public class CapacitorHealthkit: CAPPlugin {
                 _sampleType = HKWorkoutType.workoutType();
         default:
             print("cannot match sample name");
+            call.reject("Error in sample name");
+            return
         }
+        
+        /*
+        
+        // Check for access to your HealthKit Type(s).
+        if (healthStore.authorizationStatus(for: _sampleType!) == .sharingAuthorized) {
+            // print("Permission Granted to Access data")
+        } else {
+            // print("Permission Denied to Access data")
+            call.reject("Permission Denied to Access data");
+            return
+        }
+ 
+         */
         
         if (_sampleName == "sleepAnalysis") {
             
@@ -248,6 +364,8 @@ public class CapacitorHealthkit: CAPPlugin {
              ** QUERY FOR SLEEP ANALYSIS DATA
              
             */
+            
+            
             let query1 = HKSampleQuery(sampleType: _sampleType!, predicate: _predicate, limit: limit, sortDescriptors: nil) {
              query, results, error in
              
@@ -277,7 +395,7 @@ public class CapacitorHealthkit: CAPPlugin {
                     
                     
                     output.append([
-                        "uuid": r.uuid,
+                        "uuid": r.uuid.uuidString,
                         "startDate": ISO8601DateFormatter().string(from: r.startDate),
                         "endDate": ISO8601DateFormatter().string(from: r.endDate),
                         "duration": sleepHoursBetweenDates,
@@ -303,6 +421,9 @@ public class CapacitorHealthkit: CAPPlugin {
              ** QUERY FOR WORKOUT DATA
              
             */
+            
+
+            
             let query2 = HKSampleQuery(sampleType: _sampleType!, predicate: _predicate, limit: limit, sortDescriptors: nil) {
              query, results, error in
              
@@ -325,10 +446,10 @@ public class CapacitorHealthkit: CAPPlugin {
                     // print(workoutActivityTypeValue);
                     // print(self.returnWorkoutActivityTypeValueDictionnary(number: workoutActivityTypeValue));
                     
-                    var TEBData: Double?
-                    var TDData: Double?
-                    var TFCData: Double?
-                    var TSSCData: Double?
+                    var TEBData: Double? = -1
+                    var TDData: Double? = -1
+                    var TFCData: Double? = -1
+                    var TSSCData: Double? = -1
 
                     // TEB MANAGEMENT
                         var unitTEB: HKUnit?
@@ -402,7 +523,7 @@ public class CapacitorHealthkit: CAPPlugin {
                     
                     
                      output.append([
-                         "uuid": r.uuid,
+                        "uuid": r.uuid.uuidString,
                          "startDate": ISO8601DateFormatter().string(from: r.startDate),
                          "endDate": ISO8601DateFormatter().string(from: r.endDate),
                          "duration": workoutHoursBetweenDates,
@@ -410,10 +531,10 @@ public class CapacitorHealthkit: CAPPlugin {
                          "sourceBundleId": r.sourceRevision.source.bundleIdentifier,
                          "workoutActivityId": workoutActivityTypeValue,
                          "workoutActivityName": self.returnWorkoutActivityTypeValueDictionnary(number: workoutActivityTypeValue),
-                         "totalEnergyBurned": TEBData, // kilocalorie
-                         "totalDistance": TDData, // meter
-                         "totalFlightsClimbed": TFCData, // count
-                         "totalSwimmingStrokeCount": TSSCData // count
+                         "totalEnergyBurned": TEBData!, // kilocalorie
+                         "totalDistance": TDData!, // meter
+                         "totalFlightsClimbed": TFCData!, // count
+                         "totalSwimmingStrokeCount": TSSCData! // count
                      ])
                  }
                 
@@ -431,6 +552,7 @@ public class CapacitorHealthkit: CAPPlugin {
              ** QUERY FOR QUANTITY DATA
              
             */
+            
             let query3 = HKSampleQuery(sampleType: _sampleType!, predicate: _predicate, limit: limit, sortDescriptors: nil) {
                 query, results, error in
                 
@@ -488,7 +610,7 @@ public class CapacitorHealthkit: CAPPlugin {
                         // print(quantityHoursBetweenDates)
                     
                     output.append([
-                        "uuid": r.uuid,
+                        "uuid": r.uuid.uuidString,
                         "value": r.quantity.doubleValue(for: unit!),
                         "unitName": unitName!,
                         "startDate": ISO8601DateFormatter().string(from: r.startDate),
@@ -511,6 +633,8 @@ public class CapacitorHealthkit: CAPPlugin {
         }
         
     }
+    
+    
     
     func returnWorkoutActivityTypeValueDictionnary(number: UInt) -> String {
 
@@ -695,5 +819,451 @@ public class CapacitorHealthkit: CAPPlugin {
     
     // @objc func getActivityHistoryOverview(_ call: CAPPluginCall)
     
-}
+    
+    
+    @objc func multipleQueryHKitSampleType(_ call: CAPPluginCall) {
+        
+        guard let _sampleNames = call.options["sampleNames"] as? [String] else {
+            call.reject("Must provide sampleName")
+            return
+        }
+        guard let _startDate = call.options["startDate"] as? String else {
+            call.reject("Must provide startDate")
+            return
+        }
+        guard let _endDate = call.options["endDate"] as? Date else {
+            call.reject("Must provide endDate")
+            return
+        }
+        guard let _limit = call.options["limit"] as? Int else {
+            call.reject("Must provide limit")
+            return
+        }
+        
+        var output: [String: [String: Any]] = [:]
+        
+        let dispatchGroup = DispatchGroup()
+        
+        // set une var error dans le scope du for et break s'il get lerror
+        
+        for _sampleName in _sampleNames {
+            
+            dispatchGroup.enter()
+            
+            self.queryHKitSampleTypeSpecial(_sampleName: _sampleName, _startDate: _startDate, _endDate: _endDate, _limit: _limit) { result in
+                
+                switch result {
+                case .success(let sampleOutput):
+                    output[_sampleName] = sampleOutput
+                case .failure(let error):
+                    
+                    var errorMessage = ""
+                    if let localError = error as? HKSampleError {
+                        errorMessage = localError.outputMessage
+                    } else {
+                        errorMessage = error.localizedDescription
+                    }
+                    
+                    output[_sampleName] = ["errorDescription": errorMessage]
+                    print(errorMessage)
+                    
+                    // call.reject(error.localizedDescription)
+                }
+                
+                dispatchGroup.leave()
+            }
+            
+        }
 
+        
+        dispatchGroup.notify(queue: .main) {
+            print(output.description)
+            
+            call.resolve(output)
+        }
+        
+        
+        
+//        call.resolve([
+//            "multipleResultData": res
+//
+//        ])
+        
+        
+        
+    }
+    
+    enum HKSampleError: Error {
+        case sleepRequestFailed
+        case workoutRequestFailed
+        case quantityRequestFailed
+        case sampleTypeFailed
+        case deniedDataAccessFailed
+        
+        var outputMessage: String {
+            switch self {
+            case .sleepRequestFailed:
+                return "sleepRequestFailed"
+            case .workoutRequestFailed:
+                return "workoutRequestFailed"
+            case .quantityRequestFailed:
+                return "quantityRequestFailed"
+            case .sampleTypeFailed:
+                return "sampleTypeFailed"
+            case .deniedDataAccessFailed:
+                return "deniedDataAccessFailed"
+            }
+        }
+    }
+    
+    func queryHKitSampleTypeSpecial(_sampleName: String, _startDate: String, _endDate: Date, _limit: Int, completion: @escaping (Result<[String: Any], Error>) -> Void) {
+        
+        var limit: Int = 0;
+        
+        if (_limit == 0) {
+            limit = HKObjectQueryNoLimit;
+        } else {
+            limit = _limit;
+        }
+
+        
+        let dateFormatter = DateFormatter();
+        dateFormatter.dateFormat = "yyyy/MM/dd";
+        
+        let now = Date()
+        let startDate = dateFormatter.date(from: _startDate);
+        
+    
+        let _predicate = HKQuery.predicateForSamples(withStart: startDate, end: now, options: HKQueryOptions.strictStartDate);
+        
+        var _sampleType: HKSampleType? = nil;
+        
+        switch _sampleName {
+            case "stepCount":
+                _sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.stepCount)!;
+            case "flightsClimbed":
+                _sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.flightsClimbed)!;
+            case "appleExerciseTime":
+                _sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.appleExerciseTime)!;
+            case "activeEnergyBurned":
+                _sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.activeEnergyBurned)!;
+            case "basalEnergyBurned":
+                _sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.basalEnergyBurned)!;
+            case "distanceWalkingRunning":
+                _sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.distanceWalkingRunning)!;
+            case "distanceCycling":
+                _sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.distanceCycling)!;
+            case "sleepAnalysis":
+                _sampleType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!;
+            case "workoutType":
+                _sampleType = HKWorkoutType.workoutType();
+        default:
+            print("cannot match sample name");
+            completion(.failure(HKSampleError.sampleTypeFailed))
+            return
+        }
+        
+        /*
+         
+         SI TU AS PAS AUTH EN ECRITURE IL FAIL ICI ... !
+        
+        // Check for access to your HealthKit Type(s).
+        if (healthStore.authorizationStatus(for: _sampleType!) == .sharingAuthorized) {
+            // print("Permission Granted to Access data")
+        } else {
+            // print("Permission Denied to Access data")
+            completion(.failure(HKSampleError.deniedDataAccessFailed))
+            return
+        }
+ 
+         */
+        
+        
+        if (_sampleName == "sleepAnalysis") {
+            
+            
+            /*
+             
+             ** QUERY FOR SLEEP ANALYSIS DATA
+             
+            */
+            let query1 = HKSampleQuery(sampleType: _sampleType!, predicate: _predicate, limit: limit, sortDescriptors: nil) {
+             query, results, error in
+             
+                if error != nil {
+                    completion(.failure(error!))
+                    return
+                }
+                
+                 // print(results);
+                // print("-- -- --");
+                 
+                 // Je mets quantity ici pour tester
+                guard let result = results else {
+                    completion(.failure(HKSampleError.sleepRequestFailed))
+                    return
+                }
+                
+                var output: [[String: Any]] = []
+                
+                
+                for r in result {
+                    // GET DURATION SLEEP
+                        let sleepSD : NSDate
+                        let sleepED : NSDate
+                        sleepSD = r.startDate as NSDate
+                        sleepED = r.endDate as NSDate
+                        let sleepInterval = sleepED.timeIntervalSince(sleepSD as Date)
+                        let sleepSecondsInAnHour: Double = 3600;
+                        let sleepHoursBetweenDates = sleepInterval / sleepSecondsInAnHour;
+                        // print("sleepDuration:")
+                        // print(sleepHoursBetweenDates)
+                    
+                    
+                    output.append([
+                        "uuid": r.uuid.uuidString,
+                        "startDate": ISO8601DateFormatter().string(from: r.startDate),
+                        "endDate": ISO8601DateFormatter().string(from: r.endDate),
+                        "duration": sleepHoursBetweenDates,
+                        "source": r.sourceRevision.source.name,
+                        "sourceBundleId": r.sourceRevision.source.bundleIdentifier
+                    ])
+                }
+                
+                
+                completion(.success([
+                    "countReturn": result.count,
+                    "resultData": output
+                ]))
+            }
+            healthStore.execute(query1)
+            
+        } else if (_sampleName == "workoutType") {
+        
+            
+            /*
+             
+             ** QUERY FOR WORKOUT DATA
+             
+            */
+                       
+            
+            let query2 = HKSampleQuery(sampleType: _sampleType!, predicate: _predicate, limit: limit, sortDescriptors: nil) {
+             query, results, error in
+             
+                 // print(results);
+                  // print("-- -- --");
+                
+                if error != nil {
+                    completion(.failure(error!))
+                    return
+                }
+                  
+                  // Je mets quantity ici pour tester
+                  guard let result = results as? [HKWorkout] else {
+                    completion(.failure(HKSampleError.workoutRequestFailed))
+                      return
+                  }
+                 
+                 var output: [[String: Any]] = []
+                
+                 
+                 for r in result {
+                    
+                    let workoutActivityTypeValue: UInt = r.workoutActivityType.rawValue
+                    // print("workoutActivityTypeValue");
+                    // print(workoutActivityTypeValue);
+                    // print(self.returnWorkoutActivityTypeValueDictionnary(number: workoutActivityTypeValue));
+                    
+                    var TEBData: Double? = -1
+                    var TDData: Double? = -1
+                    var TFCData: Double? = -1
+                    var TSSCData: Double? = -1
+
+                    // TEB MANAGEMENT
+                        var unitTEB: HKUnit?
+                        var unitTEBName: String?
+                        if ((r.totalEnergyBurned) != nil) {
+                            if (r.totalEnergyBurned?.is(compatibleWith: HKUnit.kilocalorie()))! {
+                                unitTEB = HKUnit.kilocalorie()
+                                unitTEBName = "kilocalorie"
+                            }
+                            guard unitTEB != nil else { return }
+                            guard unitTEBName != nil else { return }
+                            TEBData = r.totalEnergyBurned?.doubleValue(for: unitTEB!);
+                        } else {
+                            TEBData = -1
+                        }
+                    // TD MANAGEMENT
+                        var unitTD: HKUnit?
+                        var unitTDName: String?
+                        if ((r.totalDistance) != nil) {
+                            if (r.totalDistance?.is(compatibleWith: HKUnit.meter()))! {
+                                unitTD = HKUnit.meter()
+                                unitTDName = "meter"
+                            }
+                            guard unitTD != nil else { return }
+                            guard unitTDName != nil else { return }
+                            TDData = r.totalDistance?.doubleValue(for: unitTD!);
+                        } else {
+                            TDData = -1
+                        }
+                    // TFC MANAGEMENT
+                        var unitTFC: HKUnit?
+                        var unitTFCName: String?
+                        if ((r.totalFlightsClimbed) != nil) {
+                            if (r.totalFlightsClimbed?.is(compatibleWith: HKUnit.count()))! {
+                                unitTFC = HKUnit.count()
+                                unitTFCName = "count"
+                            }
+                            guard unitTFC != nil else { return }
+                            guard unitTFCName != nil else { return }
+                            TFCData = r.totalFlightsClimbed?.doubleValue(for: unitTFC!);
+                        } else {
+                            TFCData = -1
+                        }
+                    // TSSC MANAGEMENT
+                        var unitTSSC: HKUnit?
+                        var unitTSSCName: String?
+                        if ((r.totalSwimmingStrokeCount) != nil) {
+                            if (r.totalSwimmingStrokeCount?.is(compatibleWith: HKUnit.count()))! {
+                                unitTSSC = HKUnit.count()
+                                unitTSSCName = "count"
+                            }
+                            guard unitTSSC != nil else { return }
+                            guard unitTSSCName != nil else { return }
+                            TSSCData = r.totalSwimmingStrokeCount?.doubleValue(for: unitTSSC!);
+                        } else {
+                            TSSCData = -1
+                        }
+                    // WORKOUT EVENT MANAGEMENT
+                        // todo later
+                
+                    // GET DURATION WORKOUT
+                        let workoutSD : NSDate
+                        let workoutED : NSDate
+                        workoutSD = r.startDate as NSDate
+                        workoutED = r.endDate as NSDate
+                        let workoutInterval = workoutED.timeIntervalSince(workoutSD as Date)
+                        let workoutSecondsInAnHour: Double = 3600;
+                        let workoutHoursBetweenDates = workoutInterval / workoutSecondsInAnHour;
+                        // print("workout duration:")
+                        // print(workoutHoursBetweenDates)
+                    
+                    
+                     output.append([
+                        "uuid": r.uuid.uuidString,
+                         "startDate": ISO8601DateFormatter().string(from: r.startDate),
+                         "endDate": ISO8601DateFormatter().string(from: r.endDate),
+                         "duration": workoutHoursBetweenDates,
+                         "source": r.sourceRevision.source.name,
+                         "sourceBundleId": r.sourceRevision.source.bundleIdentifier,
+                         "workoutActivityId": workoutActivityTypeValue,
+                         "workoutActivityName": self.returnWorkoutActivityTypeValueDictionnary(number: workoutActivityTypeValue),
+                         "totalEnergyBurned": TEBData!, // kilocalorie
+                         "totalDistance": TDData!, // meter
+                         "totalFlightsClimbed": TFCData!, // count
+                         "totalSwimmingStrokeCount": TSSCData! // count
+                     ])
+                 }
+                
+                 completion(.success([
+                     "countReturn": result.count,
+                     "resultData": output
+                 ]))
+            }
+            healthStore.execute(query2)
+        } else {
+            
+            /*
+             
+             ** QUERY FOR QUANTITY DATA
+             
+            */
+            
+            let query3 = HKSampleQuery(sampleType: _sampleType!, predicate: _predicate, limit: limit, sortDescriptors: nil) {
+                query, results, error in
+                
+                // print(results);
+                // print("-- -- --");
+                
+                if error != nil {
+                    completion(.failure(error!))
+                    return
+                }
+                
+                
+                // Je mets quantity ici pour tester
+                guard let result = results as? [HKQuantitySample] else {
+                    completion(.failure(HKSampleError.quantityRequestFailed))
+                    return
+                }
+                
+                var output: [[String: Any]] = []
+                
+                for r in result {
+                    
+                    var unit: HKUnit?
+                    var unitName: String?
+                    
+                    if r.quantityType.is(compatibleWith: HKUnit.meter()) {
+                        unit = HKUnit.meter()
+                        unitName = "meter"
+                    } else if r.quantityType.is(compatibleWith: HKUnit.count()) {
+                        unit = HKUnit.count()
+                        unitName = "count"
+                    } else if r.quantityType.is(compatibleWith: HKUnit.minute()) {
+                        unit = HKUnit.minute()
+                        unitName = "minute"
+                    } else if r.quantityType.is(compatibleWith: HKUnit.kilocalorie()) {
+                        unit = HKUnit.kilocalorie()
+                        unitName = "kilocalorie"
+                    } else {
+                        print("Error: unknown unit type")
+                    }
+                    
+                    guard unit != nil else { return }
+                    guard unitName != nil else { return }
+                    
+                    // ALSO WORK FOR DATE FORMATER ::
+                    // Date formater
+                    // let dateFormatter = DateFormatter()
+                    // dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
+                    
+                    
+                    // GET DURATION QUANTITY
+                        let quantitySD : NSDate
+                        let quantityED : NSDate
+                        quantitySD = r.startDate as NSDate
+                        quantityED = r.endDate as NSDate
+                        let quantityInterval = quantityED.timeIntervalSince(quantitySD as Date)
+                        let quantitySecondsInAnHour: Double = 3600;
+                        let quantityHoursBetweenDates = quantityInterval / quantitySecondsInAnHour;
+                        // print("quantity duration:")
+                        // print(quantityHoursBetweenDates)
+                    
+                    output.append([
+                        "uuid": r.uuid.uuidString,
+                        "value": r.quantity.doubleValue(for: unit!),
+                        "unitName": unitName!,
+                        "startDate": ISO8601DateFormatter().string(from: r.startDate),
+                        "endDate": ISO8601DateFormatter().string(from: r.endDate),
+                        "duration": quantityHoursBetweenDates,
+                        "source": r.sourceRevision.source.name,
+                        "sourceBundleId": r.sourceRevision.source.bundleIdentifier
+                    ])
+                }
+                
+                completion(.success([
+                    "countReturn": result.count,
+                    "resultData": output
+                ]))
+                            
+            }
+            
+            healthStore.execute(query3)
+        }
+        
+    }
+    
+}
