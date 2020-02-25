@@ -824,7 +824,7 @@ public class CapacitorHealthkit: CAPPlugin {
     @objc func multipleQueryHKitSampleType(_ call: CAPPluginCall) {
         
         guard let _sampleNames = call.options["sampleNames"] as? [String] else {
-            call.reject("Must provide sampleName")
+            call.reject("Must provide sampleNames")
             return
         }
         guard let _startDate = call.options["startDate"] as? String else {

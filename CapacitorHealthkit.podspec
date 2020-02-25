@@ -1,7 +1,7 @@
 
   Pod::Spec.new do |s|
     s.name = 'CapacitorHealthkit'
-    s.version = '0.0.8'
+    s.version = '0.0.9'
     s.summary = 'Capacitor plugin to retrieve data from Healthkit'
     s.license = 'MIT'
     s.homepage = 'https://github.com/Ad-Scientiam/capacitor-healthkit.git'

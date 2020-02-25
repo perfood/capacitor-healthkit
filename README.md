@@ -173,7 +173,7 @@ The datatype _activity_ also includes sleep. If you want to get authorization 
 | steps | count | HKQuantityTypeIdentifierStepCount |
 | stairs | count| HKQuantityTypeIdentifierFlightsClimbed |
 | distance | m | HKQuantityTypeIdentifierDistanceWalkingRunning + HKQuantityTypeIdentifierDistanceCycling |
-| appleExerciseTime | min | HKQuantityTypeIdentifierAppleExerciseTime |
+| duration | min | HKQuantityTypeIdentifierAppleExerciseTime |
 | calories | kcal | HKQuantityTypeIdentifierActiveEnergyBurned + HKQuantityTypeIdentifierBasalEnergyBurned |
 | activity | activityType | HKWorkoutTypeIdentifier + HKCategoryTypeIdentifierSleepAnalysis |
 
@@ -368,7 +368,7 @@ Acknowledgements : Timothée Bilodeau - :sunglasses: *iOS Developer* - [Linkedin
 
 ## Versioning
 
-Version 0.0.8
+Version 0.0.9
 
 ## Authors
 
