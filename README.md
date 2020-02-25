@@ -177,6 +177,8 @@ The datatype _activity_ also includes sleep. If you want to get authorization 
 | calories | kcal | HKQuantityTypeIdentifierActiveEnergyBurned + HKQuantityTypeIdentifierBasalEnergyBurned |
 | activity | activityType | HKWorkoutTypeIdentifier + HKCategoryTypeIdentifierSleepAnalysis |
 
+**`"duration"` should be ask for read only property**
+
 <br/>
 
 ### queryHKitSampleType()
@@ -368,7 +370,7 @@ Acknowledgements : Timothée Bilodeau - :sunglasses: *iOS Developer* - [Linkedin
 
 ## Versioning
 
-Version 0.0.9
+Version 0.1.0
 
 ## Authors
 
