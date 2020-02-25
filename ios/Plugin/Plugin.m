@@ -7,5 +7,7 @@ CAP_PLUGIN(CapacitorHealthkit, "CapacitorHealthkit",
            CAP_PLUGIN_METHOD(requestAuthorization, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(isAvailable, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(queryHKitSampleType, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(multipleQueryHKitSampleType, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(isEditionAuthorized, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(multipleIsEditionAuthorized, CAPPluginReturnPromise);
            )
-

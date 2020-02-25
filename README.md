@@ -36,6 +36,7 @@ And  **if you use Ionic or Angular, here a example setup:**
 in your .ts file add this:
 
 ```
+import { Plugins, PluginResultError } from '@capacitor/core';
 const { CapacitorHealthkit } = Plugins;
 ```
 
@@ -367,7 +368,7 @@ Acknowledgements : Timothée Bilodeau - :sunglasses: *iOS Developer* - [Linkedin
 
 ## Versioning
 
-Version 0.0.7
+Version 0.0.8
 
 ## Authors
 

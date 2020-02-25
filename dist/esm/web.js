@@ -30,6 +30,21 @@ export class CapacitorHealthkitWeb extends WebPlugin {
             throw new Error("Method not implemented.");
         });
     }
+    multipleQueryHKitSampleType() {
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error("Method not implemented.");
+        });
+    }
+    isEditionAuthorized() {
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error("Method not implemented.");
+        });
+    }
+    multipleIsEditionAuthorized() {
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error("Method not implemented.");
+        });
+    }
 }
 const CapacitorHealthkit = new CapacitorHealthkitWeb();
 export { CapacitorHealthkit };
