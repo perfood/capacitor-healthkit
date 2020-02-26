@@ -264,7 +264,7 @@ async queryHKitSampleType(sampleName: string) {
 * startDate: {type: Date} a date indicating when the data point starts
 * endDate: {type: Date} a date indicating when the data point ends
 * sourceBundleId: {type: String} the identifier of the app that produced the data
-* sourceName: {type: String} the name of the app that produced the data (as it appears to the user)
+* source: {type: String} the name of the app that produced the data (as it appears to the user)
 * unit: {type: String} the unit of measurement
 * value: the actual value
 * uuid: (string) the unique identifier of that measurement
@@ -370,7 +370,7 @@ Acknowledgements : Timothée Bilodeau - :sunglasses: *iOS Developer* - [Linkedin
 
 ## Versioning
 
-Version 0.1.0
+Version 0.1.1
 
 ## Authors
 
