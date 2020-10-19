@@ -822,12 +822,12 @@ public class CapacitorHealthkit: CAPPlugin {
     
     
     @objc func multipleQueryHKitSampleType(_ call: CAPPluginCall) {
-        
+
         guard let _sampleNames = call.options["sampleNames"] as? [String] else {
             call.reject("Must provide sampleNames")
             return
         }
-        guard let _startDate = call.options["startDate"] as? String else {
+        guard let _startDate = call.options["startDate"] as? Date else {
             call.reject("Must provide startDate")
             return
         }
@@ -839,7 +839,7 @@ public class CapacitorHealthkit: CAPPlugin {
             call.reject("Must provide limit")
             return
         }
-        
+
         var output: [String: [String: Any]] = [:]
         
         let dispatchGroup = DispatchGroup()
@@ -847,7 +847,6 @@ public class CapacitorHealthkit: CAPPlugin {
         // set une var error dans le scope du for et break s'il get lerror
         
         for _sampleName in _sampleNames {
-            
             dispatchGroup.enter()
             
             self.queryHKitSampleTypeSpecial(_sampleName: _sampleName, _startDate: _startDate, _endDate: _endDate, _limit: _limit) { result in
@@ -874,11 +873,9 @@ public class CapacitorHealthkit: CAPPlugin {
             }
             
         }
-
         
         dispatchGroup.notify(queue: .main) {
             print(output.description)
-            
             call.resolve(output)
         }
         
@@ -916,7 +913,7 @@ public class CapacitorHealthkit: CAPPlugin {
         }
     }
     
-    func queryHKitSampleTypeSpecial(_sampleName: String, _startDate: String, _endDate: Date, _limit: Int, completion: @escaping (Result<[String: Any], Error>) -> Void) {
+    func queryHKitSampleTypeSpecial(_sampleName: String, _startDate: Date, _endDate: Date, _limit: Int, completion: @escaping (Result<[String: Any], Error>) -> Void) {
         
         var limit: Int = 0;
         
@@ -926,15 +923,7 @@ public class CapacitorHealthkit: CAPPlugin {
             limit = _limit;
         }
 
-        
-        let dateFormatter = DateFormatter();
-        dateFormatter.dateFormat = "yyyy/MM/dd";
-        
-        let now = Date()
-        let startDate = dateFormatter.date(from: _startDate);
-        
-    
-        let _predicate = HKQuery.predicateForSamples(withStart: startDate, end: now, options: HKQueryOptions.strictStartDate);
+        let _predicate = HKQuery.predicateForSamples(withStart: _startDate, end: _endDate, options: HKQueryOptions.strictStartDate);
         
         var _sampleType: HKSampleType? = nil;
         

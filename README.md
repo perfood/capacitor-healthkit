@@ -335,7 +335,7 @@ queryOptions example:
 const endDate = new Date();
 queryOptions = {
       sampleNames: ["stepCount", "workoutType"], // String
-      startDate: "2019/07/01", // String
+      startDate: startDate, // Date
       endDate: endDate, // Date
       limit: 0 // Int
 };
