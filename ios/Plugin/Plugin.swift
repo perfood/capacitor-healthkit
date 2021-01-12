@@ -29,9 +29,9 @@ public class CapacitorHealthkit: CAPPlugin {
             return nil
         }
     }
-    
-    func getTypes(items: [String]) -> Set<HKSampleType> {
-        var types: Set<HKSampleType> = []
+
+    func getTypes(items: [String]) -> Set<HKObjectType> {
+        var types: Set<HKObjectType> = []
         for item in items {
             switch item {
             case "steps":
@@ -43,6 +43,7 @@ public class CapacitorHealthkit: CAPPlugin {
             case "activity":
                 types.insert(HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!)
                 types.insert(HKWorkoutType.workoutType())
+                types.insert(HKObjectType.activitySummaryType())
             case "calories":
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.activeEnergyBurned)!)
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.basalEnergyBurned)!)
@@ -55,7 +56,7 @@ public class CapacitorHealthkit: CAPPlugin {
         }
         return types
     }
-    
+
     func returnWorkoutActivityTypeValueDictionnary(activityType: HKWorkoutActivityType) -> String {
         // from https://github.com/georgegreenoflondon/HKWorkoutActivityType-Descriptions/blob/master/HKWorkoutActivityType%2BDescriptions.swift
         switch activityType {
@@ -217,7 +218,7 @@ public class CapacitorHealthkit: CAPPlugin {
             return "Other"
         }
     }
-    
+
     @objc func isAvailable(_ call: CAPPluginCall) {
         if HKHealthStore.isHealthDataAvailable() {
             return call.resolve()
@@ -225,29 +226,29 @@ public class CapacitorHealthkit: CAPPlugin {
             return call.reject("Health data not available")
         }
     }
-    
+
     @objc func isEditionAuthorized(_ call: CAPPluginCall) {
         guard let sampleName = call.options["sampleName"] as? String else {
             return call.reject("Must provide sampleName")
         }
-        
+
         let sampleType: HKSampleType? = getSampleType(sampleName: sampleName)
         if (sampleType == nil) {
             return call.reject("Cannot match sample name")
         }
-        
+
         if (healthStore.authorizationStatus(for: sampleType!) == .sharingAuthorized) {
             return call.resolve()
         } else {
             return call.reject("Permission Denied to Access data")
         }
     }
-    
+
     @objc func multipleIsEditionAuthorized(_ call: CAPPluginCall) {
         guard let sampleNames = call.options["sampleNames"] as? [String] else {
             return call.reject("Must provide sampleNames")
         }
-        
+
         for sampleName in sampleNames {
             guard let sampleType: HKSampleType = getSampleType(sampleName: sampleName) else {
                 return call.reject("Cannot match sample name")
@@ -258,7 +259,7 @@ public class CapacitorHealthkit: CAPPlugin {
         }
         return call.resolve()
     }
-    
+
     @objc func requestAuthorization(_ call: CAPPluginCall) {
         if !HKHealthStore.isHealthDataAvailable() {
             return call.reject("Health data not available")
@@ -269,14 +270,11 @@ public class CapacitorHealthkit: CAPPlugin {
         guard let _read = call.options["read"] as? [String] else {
             return call.reject("Must provide read")
         }
-        guard let _write = call.options["write"] as? [String] else {
-            return call.reject("Must provide write")
-        }
-        
-        let writeTypes: Set<HKSampleType> = getTypes(items: _write).union(getTypes(items: _all))
-        let readTypes: Set<HKSampleType> = getTypes(items: _read).union(getTypes(items: _all))
-        
-        healthStore.requestAuthorization(toShare: writeTypes, read: readTypes) { (success, error) in
+
+//        let writeTypes: Set<HKSampleType> = getTypes(items: _write).union(getTypes(items: _all))
+        let readTypes: Set<HKObjectType> = getTypes(items: _read).union(getTypes(items: _all))
+
+        healthStore.requestAuthorization(read: readTypes) { (success, error) in
             if !success {
                 call.reject("Could not get permission")
                 return
@@ -284,14 +282,14 @@ public class CapacitorHealthkit: CAPPlugin {
             call.resolve()
         }
     }
-    
+
     enum HKSampleError: Error {
         case sleepRequestFailed
         case workoutRequestFailed
         case quantityRequestFailed
         case sampleTypeFailed
         case deniedDataAccessFailed
-        
+
         var outputMessage: String {
             switch self {
             case .sleepRequestFailed:
@@ -307,7 +305,7 @@ public class CapacitorHealthkit: CAPPlugin {
             }
         }
     }
-    
+
     func generateOutput(sampleName: String, results: [HKSample]?) -> [[String: Any]]? {
         var output: [[String: Any]] = []
         for result in results! {
@@ -319,7 +317,7 @@ public class CapacitorHealthkit: CAPPlugin {
                 let sleepED = sample.endDate as NSDate
                 let sleepInterval = sleepED.timeIntervalSince(sleepSD as Date)
                 let sleepHoursBetweenDates = sleepInterval / 3600
-                
+
                 output.append([
                     "uuid": sample.uuid.uuidString,
                     "startDate": ISO8601DateFormatter().string(from: sample.startDate),
@@ -332,12 +330,12 @@ public class CapacitorHealthkit: CAPPlugin {
                 guard let sample = result as? HKWorkout else {
                     return nil
                 }
-                
+
                 var TEBData: Double? = -1
                 var TDData: Double? = -1
                 var TFCData: Double? = -1
                 var TSSCData: Double? = -1
-                
+
                 var unitTEB: HKUnit?
                 if ((sample.totalEnergyBurned) != nil) {
                     if  (sample.totalEnergyBurned?.is(compatibleWith: HKUnit.kilocalorie()))! {
@@ -346,7 +344,7 @@ public class CapacitorHealthkit: CAPPlugin {
                     guard unitTEB != nil else { return nil }
                     TEBData = sample.totalEnergyBurned?.doubleValue(for: unitTEB!)
                 }
-                
+
                 var unitTD: HKUnit?
                 if ((sample.totalDistance) != nil) {
                     if (sample.totalDistance?.is(compatibleWith: HKUnit.meter()))! {
@@ -355,7 +353,7 @@ public class CapacitorHealthkit: CAPPlugin {
                     guard unitTD != nil else { return nil }
                     TDData = sample.totalDistance?.doubleValue(for: unitTD!)
                 }
-                
+
                 var unitTFC: HKUnit?
                 if ((sample.totalFlightsClimbed) != nil) {
                     if  (sample.totalFlightsClimbed?.is(compatibleWith: HKUnit.count()))! {
@@ -364,7 +362,7 @@ public class CapacitorHealthkit: CAPPlugin {
                     guard unitTFC != nil else { return nil }
                     TFCData = sample.totalFlightsClimbed?.doubleValue(for: unitTFC!)
                 }
-                
+
                 var unitTSSC: HKUnit?
                 if ((sample.totalSwimmingStrokeCount) != nil) {
                     if (sample.totalSwimmingStrokeCount?.is(compatibleWith: HKUnit.count()))! {
@@ -373,12 +371,12 @@ public class CapacitorHealthkit: CAPPlugin {
                     guard unitTSSC != nil else { return nil }
                     TSSCData = sample.totalSwimmingStrokeCount?.doubleValue(for: unitTSSC!)
                 }
-                
+
                 let workoutSD = sample.startDate as NSDate
                 let workoutED = sample.endDate as NSDate
                 let workoutInterval = workoutED.timeIntervalSince(workoutSD as Date)
                 let workoutHoursBetweenDates = workoutInterval / 3600
-                
+
                 output.append([
                     "uuid": sample.uuid.uuidString,
                     "startDate": ISO8601DateFormatter().string(from: sample.startDate),
@@ -399,7 +397,7 @@ public class CapacitorHealthkit: CAPPlugin {
                 }
                 var unit: HKUnit?
                 var unitName: String?
-                
+
                 if sample.quantityType.is(compatibleWith: HKUnit.meter()) {
                     unit = HKUnit.meter()
                     unitName = "meter"
@@ -415,7 +413,7 @@ public class CapacitorHealthkit: CAPPlugin {
                 } else {
                     print("Error: unknown unit type")
                 }
-                
+
                 let quantitySD : NSDate
                 let quantityED : NSDate
                 quantitySD = sample.startDate as NSDate
@@ -423,7 +421,7 @@ public class CapacitorHealthkit: CAPPlugin {
                 let quantityInterval = quantityED.timeIntervalSince(quantitySD as Date)
                 let quantitySecondsInAnHour: Double = 3600
                 let quantityHoursBetweenDates = quantityInterval / quantitySecondsInAnHour
-                
+
                 output.append([
                     "uuid": sample.uuid.uuidString,
                     "value": sample.quantity.doubleValue(for: unit!),
@@ -438,7 +436,7 @@ public class CapacitorHealthkit: CAPPlugin {
         }
         return output
     }
-    
+
     @objc func queryHKitSampleType(_ call: CAPPluginCall) {
         guard let _sampleName = call.options["sampleName"] as? String else {
             return call.reject("Must provide sampleName")
@@ -452,15 +450,15 @@ public class CapacitorHealthkit: CAPPlugin {
         guard let _limit = call.options["limit"] as? Int else {
             return call.reject("Must provide limit")
         }
-        
+
         let limit: Int = (_limit == 0) ? HKObjectQueryNoLimit : _limit
-        
+
         let predicate = HKQuery.predicateForSamples(withStart: _startDate, end: _endDate, options: HKQueryOptions.strictStartDate)
-        
+
         guard let sampleType: HKSampleType = getSampleType(sampleName: _sampleName) else {
             return call.reject("Error in sample name")
         }
-        
+
         let query = HKSampleQuery(sampleType: sampleType, predicate: predicate, limit: limit, sortDescriptors: nil) {
             query, results, error in
             guard let output: [[String: Any]] = self.generateOutput(sampleName: _sampleName, results: results) else {
@@ -473,7 +471,7 @@ public class CapacitorHealthkit: CAPPlugin {
         }
         healthStore.execute(query)
     }
-    
+
     @objc func multipleQueryHKitSampleType(_ call: CAPPluginCall) {
         guard let _sampleNames = call.options["sampleNames"] as? [String] else {
             call.reject("Must provide sampleNames")
@@ -491,22 +489,22 @@ public class CapacitorHealthkit: CAPPlugin {
             call.reject("Must provide limit")
             return
         }
-        
+
         let limit: Int = (_limit == 0) ? HKObjectQueryNoLimit : _limit
-        
+
         var output: [String: [String: Any]] = [:]
-        
+
         let dispatchGroup = DispatchGroup()
-        
+
         for _sampleName in _sampleNames {
             dispatchGroup.enter()
-            
+
             self.queryHKitSampleTypeSpecial(sampleName: _sampleName, startDate: _startDate, endDate: _endDate, limit: limit) { result in
                 switch result {
                 case .success(let sampleOutput):
                     output[_sampleName] = sampleOutput
                 case .failure(let error):
-                    
+
                     var errorMessage = ""
                     if let localError = error as? HKSampleError {
                         errorMessage = localError.outputMessage
@@ -518,20 +516,20 @@ public class CapacitorHealthkit: CAPPlugin {
                 dispatchGroup.leave()
             }
         }
-        
+
         dispatchGroup.notify(queue: .main) {
             print(output.description)
             call.resolve(output)
         }
     }
-    
+
     func queryHKitSampleTypeSpecial(sampleName: String, startDate: Date, endDate: Date, limit: Int, completion: @escaping (Result<[String: Any], Error>) -> Void) {
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: HKQueryOptions.strictStartDate)
-        
+
         guard let sampleType: HKSampleType = getSampleType(sampleName: sampleName) else {
             return completion(.failure(HKSampleError.sampleTypeFailed))
         }
-        
+
         let query = HKSampleQuery(sampleType: sampleType, predicate: predicate, limit: limit, sortDescriptors: nil) {
             query, results, error in
             guard let output: [[String: Any]] = self.generateOutput(sampleName: sampleName, results: results) else {
@@ -544,4 +542,103 @@ public class CapacitorHealthkit: CAPPlugin {
         }
         healthStore.execute(query)
     }
+
+    func generateActivitySummaryOutput(results: [HKActivitySummary]) -> [[String: Any]]? {
+        var output: [[String: Any]] = []
+        let calendar = Calendar.current
+        for result in results {
+            let dateComponents = result.dateComponents(for: calendar)
+
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+
+            let date = dateComponents.date
+
+            let row: [String: Any] = [
+                "activeEnergyBurned": result.activeEnergyBurned.doubleValue(for: HKUnit.kilocalorie()),
+                "activeEnergyBurnedGoal": result.activeEnergyBurned.doubleValue(for: HKUnit.kilocalorie()),
+                "appleExerciseTime": result.appleExerciseTime.doubleValue(for: HKUnit.minute()),
+                "appleExerciseTimeGoal": result.appleExerciseTimeGoal.doubleValue(for: HKUnit.minute()),
+                "appleStandHours": result.appleStandHours.doubleValue(for: HKUnit.count()),
+                "appleStandHoursGoal": result.appleStandHoursGoal.doubleValue(for: HKUnit.count()),
+                "date": ISO8601DateFormatter().string(from: dateComponents.date!),
+            ];
+
+            output.append(row)
+
+            print(row)
+        }
+
+        return output
+    }
+
+    @objc func queryHKActivitySummary(_ call: CAPPluginCall) {
+		let calendar = NSCalendar.current
+
+        let endDate = call.options["endDate"] ?? Date()
+        let startDate = call.options["startDate"] ?? calendar.date(byAdding: .day, value: -7, to: endDate as! Date)
+
+		let units: Set<Calendar.Component> = [.day, .month, .year, .era]
+
+		var startDateComponents = calendar.dateComponents(units, from: startDate as! Date)
+		startDateComponents.calendar = calendar
+
+		var endDateComponents = calendar.dateComponents(units, from: endDate as! Date)
+		endDateComponents.calendar = calendar
+
+		// Create the predicate for the query
+		let summariesWithinRange = HKQuery.predicate(forActivitySummariesBetweenStart: startDateComponents,
+													 end: endDateComponents)
+
+		let query = HKActivitySummaryQuery(predicate: summariesWithinRange) { (query, summariesOrNil, errorOrNil) -> Void in
+
+             guard let summaries = summariesOrNil else {
+                 // Handle any errors here.
+                 return call.reject("*** Unable to get activity summaries ***")
+             }
+
+            guard let output: [[String: Any]] = self.generateActivitySummaryOutput(results: summaries) else {
+                return call.reject("Error happened while generating outputs")
+            }
+
+			 call.resolve([
+				 "countReturn": output.count,
+				 "resultData": output
+			 ])
+         }
+
+         healthStore.execute(query)
+//             guard let _sampleName = call.options["sampleName"] as? String else {
+//                 return call.reject("Must provide sampleName")
+//             }
+//             guard let _startDate = call.options["startDate"] as? Date else {
+//                 return call.reject("Must provide startDate")
+//             }
+//             guard let _endDate = call.options["endDate"] as? Date else {
+//                 return call.reject("Must provide endDate")
+//             }
+//             guard let _limit = call.options["limit"] as? Int else {
+//                 return call.reject("Must provide limit")
+//             }
+//
+//             let limit: Int = (_limit == 0) ? HKObjectQueryNoLimit : _limit
+//
+//             let predicate = HKQuery.predicateForSamples(withStart: _startDate, end: _endDate, options: HKQueryOptions.strictStartDate)
+//
+//             guard let sampleType: HKSampleType = getSampleType(sampleName: _sampleName) else {
+//                 return call.reject("Error in sample name")
+//             }
+//
+//             let query = HKSampleQuery(sampleType: sampleType, predicate: predicate, limit: limit, sortDescriptors: nil) {
+//                 query, results, error in
+//                 guard let output: [[String: Any]] = self.generateOutput(sampleName: _sampleName, results: results) else {
+//                     return call.reject("Error happened while generating outputs")
+//                 }
+//                 call.resolve([
+//                     "countReturn": output.count,
+//                     "resultData": output
+//                 ])
+//             }
+//             healthStore.execute(query)
+        }
 }
