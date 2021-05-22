@@ -368,10 +368,6 @@ Theo Creach for Ad Scientiam
 
 Acknowledgements : Timothée Bilodeau - :sunglasses: *iOS Developer* - [Linkedin](https://www.linkedin.com/in/timoth%E9e-bilodeau-03080ab2/)
 
-## Versioning
-
-Version 0.1.3
-
 ## Authors
 
 * **Theo Creach** - :star: *Developer* - [Twitter](https://twitter.com/crcht)
