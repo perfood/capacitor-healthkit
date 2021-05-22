@@ -21,6 +21,8 @@ public class CapacitorHealthkit: CAPPlugin {
             return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.distanceWalkingRunning)!
         case "distanceCycling":
             return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.distanceCycling)!
+        case "bloodGlucose":
+            return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodGlucose)!
         case "sleepAnalysis":
             return HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!
         case "workoutType":
@@ -49,6 +51,8 @@ public class CapacitorHealthkit: CAPPlugin {
             case "distance":
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.distanceWalkingRunning)!)
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.distanceCycling)!)
+            case "bloodGlucose":
+                types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodGlucose)!)
             default:
                 print("no match in case")
             }
@@ -412,6 +416,9 @@ public class CapacitorHealthkit: CAPPlugin {
                 } else if sample.quantityType.is(compatibleWith: HKUnit.kilocalorie()) {
                     unit = HKUnit.kilocalorie()
                     unitName = "kilocalorie"
+                } else if sample.quantityType.is(compatibleWith: HKUnit.moleUnit(withMolarMass: HKUnitMolarMassBloodGlucose).unitDivided(by: HKUnit.literUnit(with: .kilo))) {
+                    unit = HKUnit.moleUnit(withMolarMass: HKUnitMolarMassBloodGlucose).unitDivided(by: HKUnit.literUnit(with: .kilo))
+                    unitName = "mmol/L"
                 } else {
                     print("Error: unknown unit type")
                 }
