@@ -24,7 +24,7 @@ public class CapacitorHealthkit: CAPPlugin {
         case "bloodGlucose":
             return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodGlucose)!
         case "sleepAnalysis":
-            return HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!
+            return HKObjectType.categoryType(forIdentifier: HKCategoryTypeIdentifier.sleepAnalysis)!
         case "workoutType":
             return HKWorkoutType.workoutType()
         default:
@@ -43,7 +43,7 @@ public class CapacitorHealthkit: CAPPlugin {
             case "duration":
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.appleExerciseTime)!)
             case "activity":
-                types.insert(HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!)
+                types.insert(HKObjectType.categoryType(forIdentifier: HKCategoryTypeIdentifier.sleepAnalysis)!)
                 types.insert(HKWorkoutType.workoutType())
             case "calories":
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.activeEnergyBurned)!)
