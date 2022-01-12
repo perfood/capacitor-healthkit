@@ -475,10 +475,8 @@ public class CapacitorHealthkit: CAPPlugin {
             return call.reject("Must provide endDate")
         }
 
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions =  [.withInternetDateTime, .withFractionalSeconds]
-        let _startDate = formatter.date(from: startDateString)
-        let _endDate = formatter.date(from: endDateString)
+        let _startDate = getDateFromString(inputDate: startDateString)
+        let _endDate = getDateFromString(inputDate: endDateString)
 
         guard let _limit = call.options["limit"] as? Int else {
             return call.reject("Must provide limit")
@@ -518,10 +516,8 @@ public class CapacitorHealthkit: CAPPlugin {
             return call.reject("Must provide endDate")
         }
 
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions =  [.withInternetDateTime, .withFractionalSeconds]
-        let _startDate = formatter.date(from: startDateString)!
-        let _endDate = formatter.date(from: endDateString)!
+        let _startDate = getDateFromString(inputDate: startDateString)
+        let _endDate = getDateFromString(inputDate: endDateString)
 
         guard let _limit = call.options["limit"] as? Int else {
             call.reject("Must provide limit")
@@ -561,6 +557,12 @@ public class CapacitorHealthkit: CAPPlugin {
         }
     }
 
+    func getDateFromString(inputDate: String) -> Date{
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions =  [.withInternetDateTime, .withFractionalSeconds]
+        return formatter.date(from: inputDate)!
+    }
+
     func queryHKitSampleTypeSpecial(sampleName: String, startDate: Date, endDate: Date, limit: Int, completion: @escaping (Result<[String: Any], Error>) -> Void) {
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: HKQueryOptions.strictStartDate)
 
@@ -581,7 +583,4 @@ public class CapacitorHealthkit: CAPPlugin {
         healthStore.execute(query)
     }
     
-    override public func load() {
-        shouldStringifyDatesInCalls = false
-    }
 }
