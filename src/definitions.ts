@@ -1,10 +1,9 @@
 export interface CapacitorHealthkitPlugin {
-  echo(options: { value: string }): Promise<{ value: string }>;
   requestAuthorization(authOptions: AuthorizationQueryOptions): Promise<void>;
   queryHKitSampleType<T>(queryOptions:SingleQueryOptions): Promise<QueryOutput<T>>;
   isAvailable(): Promise<void>;
   multipleQueryHKitSampleType(queryOptions:MultipleQueryOptions): Promise<any>;
-  isEditionAuthorized(): Promise<void>;
+  isEditionAuthorized(queryOptions: EditionQuery): Promise<void>;
   multipleIsEditionAuthorized(): Promise<void>;
 }
 export interface QueryOutput<T = SleepData | ActivityData | OtherData> {
@@ -59,3 +58,19 @@ export interface AuthorizationQueryOptions {
   all: string[];
 }
 
+export interface EditionQuery {
+  sampleName: string;  
+}
+
+export enum SampleNames {
+ STEP_COUNT="stepCount",
+ FLIGHTS_CLIMBED="flightsClimbed",
+ APPLE_EXERCISE_TIME="appleExerciseTime",
+ ACTIVE_ENERGY_BURNED="activeEnergyBurned",
+ BASAL_ENERGY_BURNED="basalEnergyBurned",
+ DISTANCE_WALKING_RUNNING="distanceWalkingRunning",
+ DISTANCE_CYCLING="distanceCycling",
+ BLOOD_GLUCOSE="bloodGlucose",
+ SLEEP_ANALYSIS="sleepAnalysis",
+ WORKOUT_TYPE="workoutType",
+}

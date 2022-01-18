@@ -410,12 +410,6 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         return formatter.date(from: inputDate)!
     }
 
-    @objc func echo(_ call: CAPPluginCall) {
-        let value = call.getString("value") ?? ""
-        call.resolve([
-            "value": implementation.echo(value)
-        ])
-    }
     
     @objc func requestAuthorization(_ call: CAPPluginCall) {
         if !HKHealthStore.isHealthDataAvailable() {

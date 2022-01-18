@@ -1,10 +1,6 @@
 import Foundation
 
 @objc public class CapacitorHealthkit: NSObject {
-    @objc public func echo(_ value: String) -> String {
-        print(value)
-        return value
-    }
     @objc public func requestAuthorization(_ value: String) {
         print(value)
     }

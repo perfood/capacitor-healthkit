@@ -1,22 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { WebPlugin } from '@capacitor/core';
 
-import type { CapacitorHealthkitPlugin } from './definitions';
+import type { EditionQuery, AuthorizationQueryOptions, CapacitorHealthkitPlugin, MultipleQueryOptions, SingleQueryOptions } from './definitions';
 
 export class CapacitorHealthkitWeb
   extends WebPlugin
   implements CapacitorHealthkitPlugin {
-  async echo(options: { value: string }): Promise<{ value: string }> {
-    console.log('ECHO', options);
-    return options;
-  }
 
-  async requestAuthorization(a: any): Promise<void>{
-    console.log(a)
+  async requestAuthorization(_authOptions: AuthorizationQueryOptions): Promise<void>{
     throw this.unimplemented('Not implemented on web.');
   }
 
-  async queryHKitSampleType(a: any): Promise<any>{
-    console.log(a)
+  async queryHKitSampleType(_queryOptions: SingleQueryOptions): Promise<any>{
     throw this.unimplemented('Not implemented on web.');
   }
 
@@ -24,12 +19,11 @@ export class CapacitorHealthkitWeb
     throw this.unimplemented('Not implemented on web.');
   }
 
-  async multipleQueryHKitSampleType(a: any): Promise<any>{
-    console.log(a)
+  async multipleQueryHKitSampleType(_queryOptions: MultipleQueryOptions): Promise<any>{
     throw this.unimplemented('Not implemented on web.');
   }
 
-  async isEditionAuthorized(): Promise<void>{
+  async isEditionAuthorized(_queryOptions: EditionQuery): Promise<void>{
     throw this.unimplemented('Not implemented on web.');
   }
 
