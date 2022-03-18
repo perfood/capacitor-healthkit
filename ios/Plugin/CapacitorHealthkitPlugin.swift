@@ -10,7 +10,6 @@ var healthStore = HKHealthStore()
  */
 @objc(CapacitorHealthkitPlugin)
 public class CapacitorHealthkitPlugin: CAPPlugin {
-    private let implementation = CapacitorHealthkit()
 
     enum HKSampleError: Error {
         case sleepRequestFailed

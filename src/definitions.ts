@@ -30,7 +30,7 @@ export interface ActivityData extends BaseData {
   totalEnergyBurned: number;
   totalDistance: number;
   workoutActivityId: number;
-  workoutActivityName: number;
+  workoutActivityName: string;
 }
 
 export interface OtherData extends BaseData {
