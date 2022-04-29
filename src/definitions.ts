@@ -73,4 +73,5 @@ export enum SampleNames {
  BLOOD_GLUCOSE="bloodGlucose",
  SLEEP_ANALYSIS="sleepAnalysis",
  WORKOUT_TYPE="workoutType",
+ WEIGHT="weight"
 }

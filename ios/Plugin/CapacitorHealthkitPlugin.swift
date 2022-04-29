@@ -56,6 +56,8 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             return HKObjectType.categoryType(forIdentifier: HKCategoryTypeIdentifier.sleepAnalysis)!
         case "workoutType":
             return HKWorkoutType.workoutType()
+        case "weight":
+            return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!
         default:
             return nil
         }
@@ -82,6 +84,8 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.distanceCycling)!)
             case "bloodGlucose":
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodGlucose)!)
+            case "weight":
+                types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!)
             default:
                 print("no match in case: " + item)
             }
@@ -361,7 +365,10 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 var unit: HKUnit?
                 var unitName: String?
 
-                if sample.quantityType.is(compatibleWith: HKUnit.meter()) {
+                if sampleName == "weight" {
+                    unit = HKUnit.gramUnit(with: .kilo)
+                    unitName = "kilogram"
+                } else if sample.quantityType.is(compatibleWith: HKUnit.meter()) {
                     unit = HKUnit.meter()
                     unitName = "meter"
                 } else if sample.quantityType.is(compatibleWith: HKUnit.count()) {
@@ -380,6 +387,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                     print("Error: unknown unit type")
                 }
 
+                var value: Double 
                 let quantitySD: NSDate
                 let quantityED: NSDate
                 quantitySD = sample.startDate as NSDate
@@ -435,7 +443,6 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             call.resolve()
         }
     }
-
     @objc func queryHKitSampleType(_ call: CAPPluginCall) {
         guard let _sampleName = call.options["sampleName"] as? String else {
             return call.reject("Must provide sampleName")
