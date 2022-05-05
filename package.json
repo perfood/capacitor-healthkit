@@ -9,7 +9,7 @@
   "files": [
     "dist/",
     "ios/Plugin/",
-    "CapacitorHealthkit.podspec"
+    "PerfoodCapacitorHealthkit.podspec"
   ],
   "author": "Ad Scientiam",
   "license": "MIT",
