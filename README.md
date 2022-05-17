@@ -22,7 +22,7 @@ Disclaimer : _for now only some of the HK data base, in the future the retrieve 
 Do
 
 ```
-npm i --save capacitor-healthkit
+npm i --save @perfood/capacitor-healthkit
 ```
 
 Then
@@ -344,11 +344,6 @@ queryOptions = {
 result will look like : [String: [String: Any]]
 First string is sample name, then [String: Any] is exactly like return of queryHKitSampleType() method
 
-
-## Questions ?
-
-Please contact me (Theo) :speech_balloon:
-
 ## Whats coming soon ?
 
 * Add more data compatibility (nutrition etc)
@@ -362,15 +357,10 @@ Please contact me (Theo) :speech_balloon:
 * VSCode
 * XCode
 
-## Contributing
+## Credits
 
-Theo Creach for Ad Scientiam
-
-Acknowledgements : Timothée Bilodeau - :sunglasses: *iOS Developer* - [Linkedin](https://www.linkedin.com/in/timoth%E9e-bilodeau-03080ab2/)
-
-## Authors
-
-* **Theo Creach** - :star: *Developer* - [Twitter](https://twitter.com/crcht)
+* Theo Creach (original author) - [Twitter](https://twitter.com/crcht)
+* Timothée Bilodeau - [Linkedin](https://www.linkedin.com/in/timoth%E9e-bilodeau-03080ab2/)
 
 ## License
 

@@ -1,7 +1,7 @@
 {
   "name": "@perfood/capacitor-healthkit",
   "version": "1.0.0",
-  "description": "...",
+  "description": "Capacitor plugin to read data from and write data to Apple Health",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
@@ -11,14 +11,14 @@
     "ios/Plugin/",
     "PerfoodCapacitorHealthkit.podspec"
   ],
-  "author": "Ad Scientiam",
+  "author": "Perfood",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Ad-Scientiam/capacitor-healthkit.git"
+    "url": "git+https://github.com/perfood/capacitor-healthkit.git"
   },
   "bugs": {
-    "url": "https://github.com/Ad-Scientiam/capacitor-healthkit/issues"
+    "url": "https://github.com/perfood/capacitor-healthkit/issues"
   },
   "keywords": [
     "capacitor",
