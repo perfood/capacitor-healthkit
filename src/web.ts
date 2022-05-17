@@ -1,45 +1,33 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { WebPlugin } from '@capacitor/core';
-import { CapacitorHealthkitPlugin } from './definitions';
 
-export class CapacitorHealthkitWeb extends WebPlugin implements CapacitorHealthkitPlugin {
-  constructor() {
-    super({
-      name: 'CapacitorHealthkit',
-      platforms: ['web']
-    });
-  }
+import type { EditionQuery, AuthorizationQueryOptions, CapacitorHealthkitPlugin, MultipleQueryOptions, SingleQueryOptions } from './definitions';
 
-  async requestAuthorization(): Promise<any> {
-    throw new Error("Method not implemented.");
-  }
-  async isAvailable(): Promise<any> {
-    throw new Error("Method not implemented.");
-  }
-  async queryHKitSampleType(): Promise<any> {
-    throw new Error("Method not implemented.");
+export class CapacitorHealthkitWeb
+  extends WebPlugin
+  implements CapacitorHealthkitPlugin {
+
+  async requestAuthorization(_authOptions: AuthorizationQueryOptions): Promise<void>{
+    throw this.unimplemented('Not implemented on web.');
   }
 
-  async multipleQueryHKitSampleType(): Promise<any> {
-    throw new Error("Method not implemented.");
-  }
-  async isEditionAuthorized(): Promise<any> {
-    throw new Error("Method not implemented.");
-  }
-  async multipleIsEditionAuthorized(): Promise<any> {
-    throw new Error("Method not implemented.");
+  async queryHKitSampleType(_queryOptions: SingleQueryOptions): Promise<any>{
+    throw this.unimplemented('Not implemented on web.');
   }
 
-  /* DEMO
-  async echo(options: { value: string }): Promise<{value: string}> {
-    console.log('ECHO', options);
-    return options;
+  async isAvailable(): Promise<void>{
+    throw this.unimplemented('Not implemented on web.');
   }
-  */
+
+  async multipleQueryHKitSampleType(_queryOptions: MultipleQueryOptions): Promise<any>{
+    throw this.unimplemented('Not implemented on web.');
+  }
+
+  async isEditionAuthorized(_queryOptions: EditionQuery): Promise<void>{
+    throw this.unimplemented('Not implemented on web.');
+  }
+
+  async multipleIsEditionAuthorized(): Promise<void>{ 
+    throw this.unimplemented('Not implemented on web.');
+  }
 }
-
-const CapacitorHealthkit = new CapacitorHealthkitWeb();
-
-export { CapacitorHealthkit };
-
-import { registerWebPlugin } from '@capacitor/core';
-registerWebPlugin(CapacitorHealthkit);
