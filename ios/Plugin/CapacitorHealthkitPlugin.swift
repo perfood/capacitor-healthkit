@@ -272,6 +272,9 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
 
     func generateOutput(sampleName: String, results: [HKSample]?) -> [[String: Any]]? {
         var output: [[String: Any]] = []
+        if results == nil {
+            return output
+        }
         for result in results! {
             if sampleName == "sleepAnalysis" {
                 guard let sample = result as? HKCategorySample else {
