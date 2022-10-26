@@ -1,8 +1,10 @@
 export interface CapacitorHealthkitPlugin {
   requestAuthorization(authOptions: AuthorizationQueryOptions): Promise<void>;
-  queryHKitSampleType<T>(queryOptions:SingleQueryOptions): Promise<QueryOutput<T>>;
+  queryHKitSampleType<T>(
+    queryOptions: SingleQueryOptions,
+  ): Promise<QueryOutput<T>>;
   isAvailable(): Promise<void>;
-  multipleQueryHKitSampleType(queryOptions:MultipleQueryOptions): Promise<any>;
+  multipleQueryHKitSampleType(queryOptions: MultipleQueryOptions): Promise<any>;
   isEditionAuthorized(queryOptions: EditionQuery): Promise<void>;
   multipleIsEditionAuthorized(): Promise<void>;
 }
@@ -19,7 +21,7 @@ export interface BaseData {
   sourceBundleId: string;
   duration: number;
 }
-export interface SleepData extends BaseData  {
+export interface SleepData extends BaseData {
   sleepState: string;
   timeZone: string;
 }
@@ -34,7 +36,7 @@ export interface ActivityData extends BaseData {
 }
 
 export interface OtherData extends BaseData {
-  unitName: string; 
+  unitName: string;
   value: number;
 }
 
@@ -59,19 +61,19 @@ export interface AuthorizationQueryOptions {
 }
 
 export interface EditionQuery {
-  sampleName: string;  
+  sampleName: string;
 }
 
 export enum SampleNames {
- STEP_COUNT="stepCount",
- FLIGHTS_CLIMBED="flightsClimbed",
- APPLE_EXERCISE_TIME="appleExerciseTime",
- ACTIVE_ENERGY_BURNED="activeEnergyBurned",
- BASAL_ENERGY_BURNED="basalEnergyBurned",
- DISTANCE_WALKING_RUNNING="distanceWalkingRunning",
- DISTANCE_CYCLING="distanceCycling",
- BLOOD_GLUCOSE="bloodGlucose",
- SLEEP_ANALYSIS="sleepAnalysis",
- WORKOUT_TYPE="workoutType",
- WEIGHT="weight"
+  STEP_COUNT = 'stepCount',
+  FLIGHTS_CLIMBED = 'flightsClimbed',
+  APPLE_EXERCISE_TIME = 'appleExerciseTime',
+  ACTIVE_ENERGY_BURNED = 'activeEnergyBurned',
+  BASAL_ENERGY_BURNED = 'basalEnergyBurned',
+  DISTANCE_WALKING_RUNNING = 'distanceWalkingRunning',
+  DISTANCE_CYCLING = 'distanceCycling',
+  BLOOD_GLUCOSE = 'bloodGlucose',
+  SLEEP_ANALYSIS = 'sleepAnalysis',
+  WORKOUT_TYPE = 'workoutType',
+  WEIGHT = 'weight',
 }
