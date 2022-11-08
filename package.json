@@ -43,9 +43,9 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@capacitor/core": "^3.0.0",
-    "@capacitor/docgen": "^0.0.18",
-    "@capacitor/ios": "^3.0.0",
+    "@capacitor/core": "^4.4.0",
+    "@capacitor/docgen": "^0.2.0",
+    "@capacitor/ios": "^4.4.0",
     "@ionic/eslint-config": "^0.3.0",
     "@ionic/prettier-config": "^1.0.1",
     "@ionic/swiftlint-config": "^1.1.2",
