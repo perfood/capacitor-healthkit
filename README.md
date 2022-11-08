@@ -68,13 +68,31 @@ And you're all set ! :+1:
 
 ### isAvailable()
 
-Tells if HealthKit is available on the device.
+Returns a promise that resolves if healthkit is available on the device, or rejects if it isn't.
+Sample usage:
 
 ```
-isAvailable(successCallback, errorCallback)
+try {
+    await CapacitorHealthkit.isAvailable();
+    return true;
+}
+catch (err) {
+    console.error(err);
+    return false;
+}
 ```
-* successCallback: `{type: function(available)}`, if available a true is passed as argument, false otherwise
-* errorCallback: `{type: function(err)`, called if something went wrong, err contains a textual description of the problem
+
+or if you prefer using promises:
+
+```
+CapacitorHealthkit.isAvailable()
+    .then(() => {
+        // available
+    })
+    .catch(err) => {
+        // not available
+    });
+```
 
 <br/>
 
