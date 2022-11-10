@@ -74,7 +74,7 @@ export interface ActivityData extends BaseData {
  * These datapoints are used in the plugin for ACTIVE_ENERGY_BURNED and STEP_COUNT.
  */
 export interface OtherData extends BaseData {
-  unitName: string; 
+  unitName: string;
   value: number;
 }
 
@@ -116,22 +116,22 @@ export interface AuthorizationQueryOptions {
  * This is used for checking writing permissions.
  */
 export interface EditionQuery {
-  sampleName: string;  
+  sampleName: string;
 }
 
 /**
  * These Sample names define the possible query options.
  */
 export enum SampleNames {
- STEP_COUNT="stepCount",
- FLIGHTS_CLIMBED="flightsClimbed",
- APPLE_EXERCISE_TIME="appleExerciseTime",
- ACTIVE_ENERGY_BURNED="activeEnergyBurned",
- BASAL_ENERGY_BURNED="basalEnergyBurned",
- DISTANCE_WALKING_RUNNING="distanceWalkingRunning",
- DISTANCE_CYCLING="distanceCycling",
- BLOOD_GLUCOSE="bloodGlucose",
- SLEEP_ANALYSIS="sleepAnalysis",
- WORKOUT_TYPE="workoutType",
- WEIGHT="weight"
+  STEP_COUNT = 'stepCount',
+  FLIGHTS_CLIMBED = 'flightsClimbed',
+  APPLE_EXERCISE_TIME = 'appleExerciseTime',
+  ACTIVE_ENERGY_BURNED = 'activeEnergyBurned',
+  BASAL_ENERGY_BURNED = 'basalEnergyBurned',
+  DISTANCE_WALKING_RUNNING = 'distanceWalkingRunning',
+  DISTANCE_CYCLING = 'distanceCycling',
+  BLOOD_GLUCOSE = 'bloodGlucose',
+  SLEEP_ANALYSIS = 'sleepAnalysis',
+  WORKOUT_TYPE = 'workoutType',
+  WEIGHT = 'weight',
 }
