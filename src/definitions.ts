@@ -134,4 +134,5 @@ export enum SampleNames {
   SLEEP_ANALYSIS = 'sleepAnalysis',
   WORKOUT_TYPE = 'workoutType',
   WEIGHT = 'weight',
+  HEART_RATE = 'heartRate',
 }
