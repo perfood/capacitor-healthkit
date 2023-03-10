@@ -90,6 +90,8 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!)
             case "heartRate":
                  types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate)!)
+            case "workoutRoute":
+                types.insert(HKSeriesType.workoutRoute())
             default:
                 print("no match in case: " + item)
             }
