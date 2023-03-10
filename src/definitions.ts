@@ -28,6 +28,10 @@ export interface CapacitorHealthkitPlugin {
    * Checks if there is writing permission for multiple sample types. This function has not been tested - and usually needs a parameter to be able to answer.
    */
   multipleIsEditionAuthorized(): Promise<void>;
+   /**
+   *  Get workout's route locations
+   */
+   queryHKitWorkoutRouteLocations(queryOptions:SingleQueryOptionsWithUUID): Promise<QueryOutput<LocationData>>;
 }
 
 /**
@@ -119,6 +123,12 @@ export interface MultipleQueryOptions extends BaseQueryOptions {
   sampleNames: string[];
 }
 
+/**
+ *  This extends the BaseQueryOptions for a sample's id.
+ */
+export interface SingleQueryOptionsWithUUID extends SingleQueryOptions {
+  sampleUUID: string;
+}
 
 /**
  * Used for authorization of reading and writing access.
