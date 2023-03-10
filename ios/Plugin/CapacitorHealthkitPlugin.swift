@@ -628,6 +628,13 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 let workout = try await getWorkout(by: workoutUUID)
                 let workoutRoute = try await getRoute(for: workout)
                 let locations = try await getLocations(for: workoutRoute, limit: limit)
+                guard let output: [[String: Any]] = generateOutput(for: workoutRoute, from: locations) else {
+                    return call.reject("Error happened while generating outputs")
+                }
+                call.resolve([
+                    "countReturn": output.count,
+                    "resultData": output,
+                ])
             } catch {
                 var errorMessage = ""
                 if let localError = error as? HKSampleError {
@@ -712,5 +719,45 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             }
         }
         healthStore.execute(query)
+    }
+    
+    private func generateOutput(for route: HKWorkoutRoute, from locations: [CLLocation]) -> [[String: Any]]? {
+        
+        var output: [[String: Any]] = []
+        
+        for location in locations {
+            let quantitySD: NSDate
+            let quantityED: NSDate
+            quantitySD = route.startDate as NSDate
+            quantityED = route.endDate as NSDate
+            let quantityInterval = quantityED.timeIntervalSince(quantitySD as Date)
+            let quantitySecondsInAnHour: Double = 3600
+            let quantityHoursBetweenDates = quantityInterval / quantitySecondsInAnHour
+            var courseAccuracy = -1.0
+            if #available(iOS 13.4, *) {
+                courseAccuracy = location.courseAccuracy
+            }
+            
+            output.append([
+                "uuid": route.uuid.uuidString,
+                "startDate": ISO8601DateFormatter().string(from: route.startDate),
+                "endDate": ISO8601DateFormatter().string(from: route.endDate),
+                "duration": quantityHoursBetweenDates,
+                "source": route.sourceRevision.source.name,
+                "sourceBundleId": route.sourceRevision.source.bundleIdentifier,
+                "timestamp": ISO8601DateFormatter().string(from: location.timestamp),
+                "latitude": location.coordinate.latitude,
+                "longitude": location.coordinate.longitude,
+                "altitude": location.altitude,
+                "floorLever": location.floor?.level ?? 0,
+                "horizontalAccuracy": location.horizontalAccuracy,
+                "verticalAccuracy": location.verticalAccuracy,
+                "speed": location.speed,
+                "speedAccuracy": location.speedAccuracy,
+                "course": location.course,
+                "courseAccuracy": courseAccuracy
+            ])
+        }
+        return output
     }
 }
