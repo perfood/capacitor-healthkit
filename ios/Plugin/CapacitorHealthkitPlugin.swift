@@ -618,5 +618,46 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             return call.reject("Must provide limit")
         }
         let limit: Int = (_limit == 0) ? HKObjectQueryNoLimit : _limit
+        
+        Task {
+            do {
+                let workout = try await getWorkout(by: workoutUUID)
+            } catch {
+                var errorMessage = ""
+                if let localError = error as? HKSampleError {
+                    errorMessage = localError.outputMessage
+                } else {
+                    errorMessage = error.localizedDescription
+                }
+                call.reject("Error happened while generating outputs: \(errorMessage)")
+            }
+        }
     }
+    
+    // MARK: Helpers
+    
+    private func getWorkout(by uuid: UUID) async throws -> HKWorkout {
+        try await withCheckedThrowingContinuation { continuation in
+            getWorkout(sampleType: HKSampleType.workoutType(), uuid: uuid) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+    private func getWorkout(sampleType: HKSampleType, uuid: UUID, completion: @escaping(Result<HKWorkout, Error>) -> Void) {
+        let predicate = HKQuery.predicateForObject(with: uuid)
+        let query = HKSampleQuery(sampleType: sampleType, predicate: predicate, limit: 1, sortDescriptors: nil)
+        { _, samples, error in
+            if let resultError = error {
+                return completion(.failure(resultError))
+            }
+            if let workouts = samples as? [HKWorkout],
+               let workout = workouts.first
+            {
+                return completion(.success(workout))
+            }
+            return completion(.failure(HKSampleError.workoutRequestFailed))
+        }
+        healthStore.execute(query)
+    }
+    
 }
