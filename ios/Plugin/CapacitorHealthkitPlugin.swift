@@ -1,6 +1,7 @@
 import Foundation
 import Capacitor
 import HealthKit
+import CoreLocation
 
 var healthStore = HKHealthStore()
 
@@ -626,6 +627,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             do {
                 let workout = try await getWorkout(by: workoutUUID)
                 let workoutRoute = try await getRoute(for: workout)
+                let locations = try await getLocations(for: workoutRoute, limit: limit)
             } catch {
                 var errorMessage = ""
                 if let localError = error as? HKSampleError {
@@ -689,4 +691,26 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         healthStore.execute(query)
     }
  
+    private func getLocations(for route: HKWorkoutRoute, limit: Int) async throws -> [CLLocation] {
+        try await withCheckedThrowingContinuation{ continuation in
+            getLocations(for: route, limit: limit) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+    private func getLocations(for route: HKWorkoutRoute, limit: Int, completion: @escaping(Result<[CLLocation], Error>) -> Void) {
+        var queryLocations = [CLLocation]()
+        let query = HKWorkoutRouteQuery(route: route) { query, locations, done, error in
+            if let resultError = error {
+                return completion(.failure(resultError))
+            }
+            if let locationBatch = locations {
+                queryLocations.append(contentsOf: locationBatch)
+            }
+            if done {
+                completion(.success(queryLocations))
+            }
+        }
+        healthStore.execute(query)
+    }
 }
