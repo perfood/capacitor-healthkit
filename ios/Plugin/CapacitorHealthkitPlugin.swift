@@ -17,6 +17,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         case quantityRequestFailed
         case sampleTypeFailed
         case deniedDataAccessFailed
+        case workoutRouteRequestFailed
 
         var outputMessage: String {
             switch self {
@@ -30,6 +31,8 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 return "sampleTypeFailed"
             case .deniedDataAccessFailed:
                 return "deniedDataAccessFailed"
+            case .workoutRouteRequestFailed:
+                return "workoutRouteRequestFailed"
             }
         }
     }
@@ -622,6 +625,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         Task {
             do {
                 let workout = try await getWorkout(by: workoutUUID)
+                let workoutRoute = try await getRoute(for: workout)
             } catch {
                 var errorMessage = ""
                 if let localError = error as? HKSampleError {
@@ -660,4 +664,29 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         healthStore.execute(query)
     }
     
+    private func getRoute(for workout: HKWorkout) async throws -> HKWorkoutRoute {
+        try await withCheckedThrowingContinuation { continuation in
+            getRoute(for: workout) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+    private func getRoute(for workout: HKWorkout, completion: @escaping (Result<HKWorkoutRoute, Error>) -> Void) {
+        let predicate = HKQuery.predicateForObjects(from: workout)
+        let query = HKAnchoredObjectQuery(type: HKSeriesType.workoutRoute(),
+                                          predicate: predicate, anchor: nil, limit: HKObjectQueryNoLimit)
+        { _, samples, _, _, error in
+            if let resultError = error {
+                return completion(.failure(resultError))
+            }
+            if let routes = samples as? [HKWorkoutRoute],
+               let route = routes.first
+            {
+                return completion(.success(route))
+            }
+            return completion(.failure(HKSampleError.workoutRouteRequestFailed))
+        }
+        healthStore.execute(query)
+    }
+ 
 }
