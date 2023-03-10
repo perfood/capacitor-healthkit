@@ -79,6 +79,24 @@ export interface OtherData extends BaseData {
 }
 
 /**
+ *  This data points are specific for workout's route location.
+ *  https://developer.apple.com/documentation/corelocation/cllocation
+ */
+export interface LocationData extends BaseData {
+  timestamp: string;
+  latitude: number;
+  longitude: number;
+  altitude: number;
+  floorLever: number;
+  horizontalAccuracy: number;
+  verticalAccuracy: number;
+  speed: number;
+  speedAccuracy: number;
+  course: number;
+  courseAccuracy: number;
+}
+
+/**
  * These Basequeryoptions are always necessary for a query, they are extended by SingleQueryOptions and MultipleQueryOptions.
  */
 export interface BaseQueryOptions {
