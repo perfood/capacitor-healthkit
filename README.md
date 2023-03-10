@@ -107,6 +107,7 @@ And you're all set ! :+1:
 * [`multipleQueryHKitSampleType(...)`](#multiplequeryhkitsampletype)
 * [`isEditionAuthorized(...)`](#iseditionauthorized)
 * [`multipleIsEditionAuthorized()`](#multipleiseditionauthorized)
+* [`queryHKitWorkoutRouteLocations(...)`](#queryhkitworkoutroutelocations)
 * [Interfaces](#interfaces)
 
 </docgen-index>
@@ -200,6 +201,23 @@ Checks if there is writing permission for multiple sample types. This function h
 --------------------
 
 
+### queryHKitWorkoutRouteLocations(...)
+
+```typescript
+queryHKitWorkoutRouteLocations(queryOptions: SingleQueryOptionsWithUUID) => Promise<QueryOutput<LocationData>>
+```
+
+Get workout's route locations
+
+| Param              | Type                                                                              |
+| ------------------ | --------------------------------------------------------------------------------- |
+| **`queryOptions`** | <code><a href="#singlequeryoptionswithuuid">SingleQueryOptionsWithUUID</a></code> |
+
+**Returns:** <code>Promise&lt;<a href="#queryoutput">QueryOutput</a>&lt;<a href="#locationdata">LocationData</a>&gt;&gt;</code>
+
+--------------------
+
+
 ### Interfaces
 
 
@@ -249,6 +267,35 @@ This is used for checking writing permissions.
 | Prop             | Type                |
 | ---------------- | ------------------- |
 | **`sampleName`** | <code>string</code> |
+
+
+#### LocationData
+
+This data points are specific for workout's route location.
+https://developer.apple.com/documentation/corelocation/cllocation
+
+| Prop                     | Type                |
+| ------------------------ | ------------------- |
+| **`timestamp`**          | <code>string</code> |
+| **`latitude`**           | <code>number</code> |
+| **`longitude`**          | <code>number</code> |
+| **`altitude`**           | <code>number</code> |
+| **`floorLever`**         | <code>number</code> |
+| **`horizontalAccuracy`** | <code>number</code> |
+| **`verticalAccuracy`**   | <code>number</code> |
+| **`speed`**              | <code>number</code> |
+| **`speedAccuracy`**      | <code>number</code> |
+| **`course`**             | <code>number</code> |
+| **`courseAccuracy`**     | <code>number</code> |
+
+
+#### SingleQueryOptionsWithUUID
+
+This extends the BaseQueryOptions for a sample's id.
+
+| Prop             | Type                |
+| ---------------- | ------------------- |
+| **`sampleUUID`** | <code>string</code> |
 
 </docgen-api>
 
