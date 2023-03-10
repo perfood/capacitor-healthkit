@@ -602,4 +602,19 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         }
         healthStore.execute(query)
     }
+
+    // MARK: - Workout Route
+    
+    @objc func queryHKitWorkoutRouteLocations(_ call: CAPPluginCall) {
+        guard let _sampleUUID = call.options["sampleUUID"] as? String else {
+            return call.reject("Must provide sample uuid")
+        }
+        guard let workoutUUID = UUID(uuidString: _sampleUUID) else {
+            return call.reject("Invalid workout uuid")
+        }
+        guard let _limit = call.options["limit"] as? Int else {
+            return call.reject("Must provide limit")
+        }
+        let limit: Int = (_limit == 0) ? HKObjectQueryNoLimit : _limit
+    }
 }
