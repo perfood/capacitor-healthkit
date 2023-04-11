@@ -38,6 +38,14 @@ export interface QueryOutput<T = SleepData | ActivityData | OtherData> {
   resultData: T[];
 }
 
+export interface DeviceInformation {
+  name: string;
+  manufacturer: string;
+  model: string;
+  hardwareVersion: string;
+  softwareVersion: string;
+}
+
 /**
  * These data points are returned for every entry.
  */
@@ -47,6 +55,7 @@ export interface BaseData {
   source: string;
   uuid: string;
   sourceBundleId: string;
+  device: DeviceInformation | null;
   duration: number;
 }
 
