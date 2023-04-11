@@ -58,6 +58,8 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             return HKWorkoutType.workoutType()
         case "weight":
             return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!
+        case "heartRate":
+             return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate)!
         default:
             return nil
         }
@@ -86,6 +88,8 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodGlucose)!)
             case "weight":
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!)
+            case "heartRate":
+                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate)!)
             default:
                 print("no match in case: " + item)
             }
@@ -368,7 +372,10 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 var unit: HKUnit?
                 var unitName: String?
 
-                if sampleName == "weight" {
+                if sampleName == "heartRate" {
+                    unit = HKUnit(from: "count/min")
+                    unitName = "BPM"
+                } else if sampleName == "weight" {
                     unit = HKUnit.gramUnit(with: .kilo)
                     unitName = "kilogram"
                 } else if sample.quantityType.is(compatibleWith: HKUnit.meter()) {
