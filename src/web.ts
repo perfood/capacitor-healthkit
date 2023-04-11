@@ -7,6 +7,7 @@ import type {
   CapacitorHealthkitPlugin,
   MultipleQueryOptions,
   SingleQueryOptions,
+  SingleQueryOptionsWithUUID,
 } from './definitions';
 
 export class CapacitorHealthkitWeb
@@ -37,6 +38,10 @@ export class CapacitorHealthkitWeb
   }
 
   async multipleIsEditionAuthorized(): Promise<void> {
+    throw this.unimplemented('Not implemented on web.');
+  }
+
+  async queryHKitWorkoutRouteLocations(_queryOptions: SingleQueryOptionsWithUUID): Promise<any> {
     throw this.unimplemented('Not implemented on web.');
   }
 }

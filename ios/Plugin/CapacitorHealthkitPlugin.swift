@@ -1,6 +1,7 @@
 import Foundation
 import Capacitor
 import HealthKit
+import CoreLocation
 
 var healthStore = HKHealthStore()
 
@@ -17,6 +18,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         case quantityRequestFailed
         case sampleTypeFailed
         case deniedDataAccessFailed
+        case workoutRouteRequestFailed
 
         var outputMessage: String {
             switch self {
@@ -30,6 +32,8 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 return "sampleTypeFailed"
             case .deniedDataAccessFailed:
                 return "deniedDataAccessFailed"
+            case .workoutRouteRequestFailed:
+                return "workoutRouteRequestFailed"
             }
         }
     }
@@ -58,6 +62,8 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             return HKWorkoutType.workoutType()
         case "weight":
             return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!
+        case "heartRate":
+             return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate)!
         default:
             return nil
         }
@@ -86,6 +92,10 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodGlucose)!)
             case "weight":
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!)
+            case "heartRate":
+                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate)!)
+            case "workoutRoute":
+                types.insert(HKSeriesType.workoutRoute())
             default:
                 print("no match in case: " + item)
             }
@@ -368,7 +378,10 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 var unit: HKUnit?
                 var unitName: String?
 
-                if sampleName == "weight" {
+                if sampleName == "heartRate" {
+                    unit = HKUnit(from: "count/min")
+                    unitName = "BPM"
+                } else if sampleName == "weight" {
                     unit = HKUnit.gramUnit(with: .kilo)
                     unitName = "kilogram"
                 } else if sample.quantityType.is(compatibleWith: HKUnit.meter()) {
@@ -594,5 +607,157 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             ]))
         }
         healthStore.execute(query)
+    }
+
+    // MARK: - Workout Route
+    
+    @objc func queryHKitWorkoutRouteLocations(_ call: CAPPluginCall) {
+        guard let _sampleUUID = call.options["sampleUUID"] as? String else {
+            return call.reject("Must provide sample uuid")
+        }
+        guard let workoutUUID = UUID(uuidString: _sampleUUID) else {
+            return call.reject("Invalid workout uuid")
+        }
+        guard let _limit = call.options["limit"] as? Int else {
+            return call.reject("Must provide limit")
+        }
+        let limit: Int = (_limit == 0) ? HKObjectQueryNoLimit : _limit
+        
+        Task {
+            do {
+                let workout = try await getWorkout(by: workoutUUID)
+                let workoutRoute = try await getRoute(for: workout)
+                let locations = try await getLocations(for: workoutRoute, limit: limit)
+                guard let output: [[String: Any]] = generateOutput(for: workoutRoute, from: locations) else {
+                    return call.reject("Error happened while generating outputs")
+                }
+                call.resolve([
+                    "countReturn": output.count,
+                    "resultData": output,
+                ])
+            } catch {
+                var errorMessage = ""
+                if let localError = error as? HKSampleError {
+                    errorMessage = localError.outputMessage
+                } else {
+                    errorMessage = error.localizedDescription
+                }
+                call.reject("Error happened while generating outputs: \(errorMessage)")
+            }
+        }
+    }
+    
+    // MARK: Helpers
+    
+    private func getWorkout(by uuid: UUID) async throws -> HKWorkout {
+        try await withCheckedThrowingContinuation { continuation in
+            getWorkout(sampleType: HKSampleType.workoutType(), uuid: uuid) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+    private func getWorkout(sampleType: HKSampleType, uuid: UUID, completion: @escaping(Result<HKWorkout, Error>) -> Void) {
+        let predicate = HKQuery.predicateForObject(with: uuid)
+        let query = HKSampleQuery(sampleType: sampleType, predicate: predicate, limit: 1, sortDescriptors: nil)
+        { _, samples, error in
+            if let resultError = error {
+                return completion(.failure(resultError))
+            }
+            if let workouts = samples as? [HKWorkout],
+               let workout = workouts.first
+            {
+                return completion(.success(workout))
+            }
+            return completion(.failure(HKSampleError.workoutRequestFailed))
+        }
+        healthStore.execute(query)
+    }
+    
+    private func getRoute(for workout: HKWorkout) async throws -> HKWorkoutRoute {
+        try await withCheckedThrowingContinuation { continuation in
+            getRoute(for: workout) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+    private func getRoute(for workout: HKWorkout, completion: @escaping (Result<HKWorkoutRoute, Error>) -> Void) {
+        let predicate = HKQuery.predicateForObjects(from: workout)
+        let query = HKAnchoredObjectQuery(type: HKSeriesType.workoutRoute(),
+                                          predicate: predicate, anchor: nil, limit: HKObjectQueryNoLimit)
+        { _, samples, _, _, error in
+            if let resultError = error {
+                return completion(.failure(resultError))
+            }
+            if let routes = samples as? [HKWorkoutRoute],
+               let route = routes.first
+            {
+                return completion(.success(route))
+            }
+            return completion(.failure(HKSampleError.workoutRouteRequestFailed))
+        }
+        healthStore.execute(query)
+    }
+ 
+    private func getLocations(for route: HKWorkoutRoute, limit: Int) async throws -> [CLLocation] {
+        try await withCheckedThrowingContinuation{ continuation in
+            getLocations(for: route, limit: limit) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+    private func getLocations(for route: HKWorkoutRoute, limit: Int, completion: @escaping(Result<[CLLocation], Error>) -> Void) {
+        var queryLocations = [CLLocation]()
+        let query = HKWorkoutRouteQuery(route: route) { query, locations, done, error in
+            if let resultError = error {
+                return completion(.failure(resultError))
+            }
+            if let locationBatch = locations {
+                queryLocations.append(contentsOf: locationBatch)
+            }
+            if done {
+                completion(.success(queryLocations))
+            }
+        }
+        healthStore.execute(query)
+    }
+    
+    private func generateOutput(for route: HKWorkoutRoute, from locations: [CLLocation]) -> [[String: Any]]? {
+        
+        var output: [[String: Any]] = []
+        
+        for location in locations {
+            let quantitySD: NSDate
+            let quantityED: NSDate
+            quantitySD = route.startDate as NSDate
+            quantityED = route.endDate as NSDate
+            let quantityInterval = quantityED.timeIntervalSince(quantitySD as Date)
+            let quantitySecondsInAnHour: Double = 3600
+            let quantityHoursBetweenDates = quantityInterval / quantitySecondsInAnHour
+            var courseAccuracy = -1.0
+            if #available(iOS 13.4, *) {
+                courseAccuracy = location.courseAccuracy
+            }
+            
+            output.append([
+                "uuid": route.uuid.uuidString,
+                "startDate": ISO8601DateFormatter().string(from: route.startDate),
+                "endDate": ISO8601DateFormatter().string(from: route.endDate),
+                "duration": quantityHoursBetweenDates,
+                "source": route.sourceRevision.source.name,
+                "sourceBundleId": route.sourceRevision.source.bundleIdentifier,
+                "timestamp": ISO8601DateFormatter().string(from: location.timestamp),
+                "latitude": location.coordinate.latitude,
+                "longitude": location.coordinate.longitude,
+                "altitude": location.altitude,
+                "floorLever": location.floor?.level ?? 0,
+                "horizontalAccuracy": location.horizontalAccuracy,
+                "verticalAccuracy": location.verticalAccuracy,
+                "speed": location.speed,
+                "speedAccuracy": location.speedAccuracy,
+                "course": location.course,
+                "courseAccuracy": courseAccuracy
+            ])
+        }
+        return output
     }
 }

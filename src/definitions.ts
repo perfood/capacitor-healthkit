@@ -28,6 +28,10 @@ export interface CapacitorHealthkitPlugin {
    * Checks if there is writing permission for multiple sample types. This function has not been tested - and usually needs a parameter to be able to answer.
    */
   multipleIsEditionAuthorized(): Promise<void>;
+   /**
+   *  Get workout's route locations
+   */
+   queryHKitWorkoutRouteLocations(queryOptions:SingleQueryOptionsWithUUID): Promise<QueryOutput<LocationData>>;
 }
 
 /**
@@ -79,6 +83,24 @@ export interface OtherData extends BaseData {
 }
 
 /**
+ *  This data points are specific for workout's route location.
+ *  https://developer.apple.com/documentation/corelocation/cllocation
+ */
+export interface LocationData extends BaseData {
+  timestamp: string;
+  latitude: number;
+  longitude: number;
+  altitude: number;
+  floorLever: number;
+  horizontalAccuracy: number;
+  verticalAccuracy: number;
+  speed: number;
+  speedAccuracy: number;
+  course: number;
+  courseAccuracy: number;
+}
+
+/**
  * These Basequeryoptions are always necessary for a query, they are extended by SingleQueryOptions and MultipleQueryOptions.
  */
 export interface BaseQueryOptions {
@@ -101,6 +123,12 @@ export interface MultipleQueryOptions extends BaseQueryOptions {
   sampleNames: string[];
 }
 
+/**
+ *  This extends the BaseQueryOptions for a sample's id.
+ */
+export interface SingleQueryOptionsWithUUID extends SingleQueryOptions {
+  sampleUUID: string;
+}
 
 /**
  * Used for authorization of reading and writing access.
@@ -134,4 +162,5 @@ export enum SampleNames {
   SLEEP_ANALYSIS = 'sleepAnalysis',
   WORKOUT_TYPE = 'workoutType',
   WEIGHT = 'weight',
+  HEART_RATE = 'heartRate',
 }
