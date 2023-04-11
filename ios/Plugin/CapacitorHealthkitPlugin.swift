@@ -298,6 +298,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                     "sleepState": sleepState,
                     "source": sample.sourceRevision.source.name,
                     "sourceBundleId": sample.sourceRevision.source.bundleIdentifier,
+                    "device": getDeviceInformation(device: sample.device),
                 ]
                 output.append(constructedSample)
             } else if sampleName == "workoutType" {
@@ -358,6 +359,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                     "duration": workoutHoursBetweenDates,
                     "source": sample.sourceRevision.source.name,
                     "sourceBundleId": sample.sourceRevision.source.bundleIdentifier,
+                    "device": getDeviceInformation(device: sample.device),
                     "workoutActivityId": sample.workoutActivityType.rawValue,
                     "workoutActivityName": returnWorkoutActivityTypeValueDictionnary(activityType: sample.workoutActivityType),
                     "totalEnergyBurned": TEBData!, // kilocalorie
@@ -415,10 +417,27 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                     "duration": quantityHoursBetweenDates,
                     "source": sample.sourceRevision.source.name,
                     "sourceBundleId": sample.sourceRevision.source.bundleIdentifier,
+                    "device": getDeviceInformation(device: sample.device),
                 ])
             }
         }
         return output
+    }
+
+    func getDeviceInformation(device: HKDevice?) -> [String: String?]? {
+        if (device == nil) {
+            return nil;
+        }
+        
+        let deviceInformation: [String: String?] = [
+            "name": device?.name,
+            "model": device?.model,
+            "manufacturer": device?.manufacturer,
+            "hardwareVersion": device?.hardwareVersion,
+            "softwareVersion": device?.softwareVersion,
+        ];
+                
+        return deviceInformation;
     }
 
     func getDateFromString(inputDate: String) -> Date{
