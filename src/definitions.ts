@@ -144,4 +144,5 @@ export enum SampleNames {
   WORKOUT_TYPE = 'workoutType',
   WEIGHT = 'weight',
   HEART_RATE = 'heartRate',
+  DIETARY_ENERGY_CONSUMED = 'dietaryEnergyConsumed',
 }
