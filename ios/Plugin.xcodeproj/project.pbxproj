@@ -15,6 +15,8 @@
 		50ADFFA42020D75100D50D53 /* Capacitor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50ADFFA52020D75100D50D53 /* Capacitor.framework */; };
 		50ADFFA82020EE4F00D50D53 /* CapacitorHealthkitPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 50ADFFA72020EE4F00D50D53 /* CapacitorHealthkitPlugin.m */; };
 		50E1A94820377CB70090CE1A /* CapacitorHealthkitPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E1A94720377CB70090CE1A /* CapacitorHealthkitPlugin.swift */; };
+		839B83522A8CA77500B75931 /* SampleTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 839B83512A8CA77500B75931 /* SampleTypes.swift */; };
+		83D3EDA62A8CC7B600F6D849 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3EDA52A8CC7B600F6D849 /* Date.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +41,8 @@
 		50ADFFA72020EE4F00D50D53 /* CapacitorHealthkitPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CapacitorHealthkitPlugin.m; sourceTree = "<group>"; };
 		50E1A94720377CB70090CE1A /* CapacitorHealthkitPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CapacitorHealthkitPlugin.swift; sourceTree = "<group>"; };
 		5E23F77F099397094342571A /* Pods-Plugin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Plugin/Pods-Plugin.debug.xcconfig"; sourceTree = "<group>"; };
+		839B83512A8CA77500B75931 /* SampleTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleTypes.swift; sourceTree = "<group>"; };
+		83D3EDA52A8CC7B600F6D849 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		91781294A431A2A7CC6EB714 /* Pods-Plugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.release.xcconfig"; path = "Pods/Target Support Files/Pods-Plugin/Pods-Plugin.release.xcconfig"; sourceTree = "<group>"; };
 		96ED1B6440D6672E406C8D19 /* Pods-PluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PluginTests/Pods-PluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F65BB2953ECE002E1EF3E424 /* Pods-PluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PluginTests/Pods-PluginTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -94,6 +98,8 @@
 				50ADFF8B201F53D600D50D53 /* CapacitorHealthkitPlugin.h */,
 				50ADFFA72020EE4F00D50D53 /* CapacitorHealthkitPlugin.m */,
 				50ADFF8C201F53D600D50D53 /* Info.plist */,
+				839B83512A8CA77500B75931 /* SampleTypes.swift */,
+				83D3EDA52A8CC7B600F6D849 /* Date.swift */,
 			);
 			path = Plugin;
 			sourceTree = "<group>";
@@ -188,7 +194,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 1400;
+				LastUpgradeCheck = 1160;
 				ORGANIZATIONNAME = "Max Lynch";
 				TargetAttributes = {
 					50ADFF87201F53D600D50D53 = {
@@ -304,7 +310,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				50E1A94820377CB70090CE1A /* CapacitorHealthkitPlugin.swift in Sources */,
+				83D3EDA62A8CC7B600F6D849 /* Date.swift in Sources */,
 				50ADFFA82020EE4F00D50D53 /* CapacitorHealthkitPlugin.m in Sources */,
+				839B83522A8CA77500B75931 /* SampleTypes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,6 +479,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.getcapacitor.Plugin;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -496,6 +505,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.getcapacitor.Plugin;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
