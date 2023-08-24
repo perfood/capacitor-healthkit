@@ -152,4 +152,46 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         
         healthStore.execute(query)
     }
+    
+    @objc func getWorkouts(_ call: CAPPluginCall) {
+        // let workoutPredicate = HKQuery.predicateForWorkouts(with: .any)
+
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
+
+        let workoutQuery = HKSampleQuery(sampleType: HKObjectType.workoutType(),
+                                         predicate: nil,
+                                         limit: 0,
+                                         sortDescriptors: [sortDescriptor]) { (_, samples, error) in
+
+            guard let workouts = samples as? [HKWorkout], error == nil else {
+                print(error ?? "foo")
+                
+                return
+            }
+            
+            print(workouts)
+            //completion(workouts, nil)
+            
+            for workout in workouts {
+                print(workout.startDate)
+                print(workout.duration)
+                print(getActivityTypeAsString(workout.workoutActivityType))
+                print("---- Workout Details ----")
+                print("Activity Type: \(workout.workoutActivityType.rawValue.description)")
+                print("Start Date: \(workout.startDate)")
+                print("End Date: \(workout.endDate)")
+                print("Duration: \(workout.duration) seconds")
+                print("Total Energy Burned: \(String(describing: workout.totalEnergyBurned?.doubleValue(for: HKUnit.kilocalorie()))) kcal")
+                print("Total Distance: \(String(describing: workout.totalDistance?.doubleValue(for: HKUnit.meter()))) meters")
+                if let heartRate = workout.totalFlightsClimbed {
+                    print("Total Flights Climbed: \(heartRate)")
+                }
+                print("-------------------------")
+            }
+            
+            call.resolve()
+        }
+        
+        healthStore.execute(workoutQuery)
+    }
 }

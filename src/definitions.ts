@@ -5,6 +5,7 @@ export interface CapacitorHealthkitPlugin {
     options: GetAuthorizationStatusOptions,
   ): Promise<{ status: AuthorizationStatus }>;
   getStatisticsCollection(options: StatisticsCollectionOptions): Promise<any>; // TODO: add response type
+  getWorkouts(): Promise<any>;
 }
 
 export interface RequestAuthorizationOptions {
