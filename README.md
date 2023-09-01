@@ -17,6 +17,7 @@ npx cap sync
 * [`isAvailable()`](#isavailable)
 * [`getAuthorizationStatus(...)`](#getauthorizationstatus)
 * [`getStatisticsCollection(...)`](#getstatisticscollection)
+* [`getBodyMassEntries()`](#getbodymassentries)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
 
@@ -71,6 +72,17 @@ getStatisticsCollection(options: StatisticsCollectionOptions) => Promise<any>
 | Param         | Type                                                                                |
 | ------------- | ----------------------------------------------------------------------------------- |
 | **`options`** | <code><a href="#statisticscollectionoptions">StatisticsCollectionOptions</a></code> |
+
+**Returns:** <code>Promise&lt;any&gt;</code>
+
+--------------------
+
+
+### getBodyMassEntries()
+
+```typescript
+getBodyMassEntries() => Promise<any>
+```
 
 **Returns:** <code>Promise&lt;any&gt;</code>
 

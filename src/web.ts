@@ -36,4 +36,8 @@ export class CapacitorHealthkitWeb
     console.log({ options });
     throw new Error('Method not implemented.');
   }
+
+  async getBodyMassEntries(): Promise<any> {
+    throw new Error('Method not implemented.');
+  }
 }

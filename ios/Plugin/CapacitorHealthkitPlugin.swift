@@ -152,4 +152,50 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         
         healthStore.execute(query)
     }
+    
+    @objc func getBodyMassEntries(_ call: CAPPluginCall) {
+        guard let startDateString = call.options["startDate"] as? String else {
+            return call.reject("startDate is required.")
+        }
+        
+        let endDateString = call.options["endDate"] as? String
+        
+        let limit = call.options["limit"] as? Int ?? 0
+        
+        let sampleType = HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!
+        
+        let _startDate = getDateFromString(inputDate: startDateString)
+        let _endDate = endDateString != nil ? getDateFromString(inputDate: endDateString!) : Date()
+        let _limit: Int = (limit == 0) ? HKObjectQueryNoLimit : limit
+        
+        let predicate = HKQuery.predicateForSamples(withStart: _startDate, end: _endDate, options: HKQueryOptions.strictStartDate)
+            
+        // Create a query to fetch the latest weight samples
+        let bodyMassQuery = HKSampleQuery(sampleType: sampleType,
+                                        predicate: predicate,
+                                        limit: _limit,
+                                        sortDescriptors: nil) { (query, samples, error) in
+            
+            guard let bodyMassSamples = samples as? [HKQuantitySample], error == nil else {
+                return call.reject("error")
+            }
+            
+            var output: [[String: Any]] = []
+            
+            for bodyMassSample in bodyMassSamples {
+                output.append([
+                    "date": bodyMassSample.startDate,
+                    "value": bodyMassSample.quantity.doubleValue(for: HKUnit.gramUnit(with: .kilo)),
+                    "unit": "kg",
+                    "uuid": bodyMassSample.uuid.uuidString,
+                    "sourceName": bodyMassSample.sourceRevision.source.name,
+                    "sourceBundleId": bodyMassSample.sourceRevision.source.bundleIdentifier
+                ])
+            }
+            
+            call.resolve(["data": output])
+        }
+        
+        healthStore.execute(bodyMassQuery)
+    }
 }
