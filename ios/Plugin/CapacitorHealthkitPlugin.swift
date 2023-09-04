@@ -154,44 +154,146 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
     }
     
     @objc func getWorkouts(_ call: CAPPluginCall) {
-        // let workoutPredicate = HKQuery.predicateForWorkouts(with: .any)
+        
+        guard let startDateString = call.options["startDate"] as? String else {
+                   return call.reject("startDate is required.")
+               }
+        
+        let endDateString = call.options["endDate"] as? String
 
+        let limit = call.options["limit"] as? Int ?? 0
+
+        let _startDate = getDateFromString(inputDate: startDateString)
+        let _endDate = endDateString != nil ? getDateFromString(inputDate: endDateString!) : Date()
+        let _limit: Int = (limit == 0) ? HKObjectQueryNoLimit : limit
+    
+        let predicate = HKQuery.predicateForSamples(withStart: _startDate, end: _endDate, options: HKQueryOptions.strictStartDate)
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)
-
-        let workoutQuery = HKSampleQuery(sampleType: HKObjectType.workoutType(),
-                                         predicate: nil,
-                                         limit: 0,
-                                         sortDescriptors: [sortDescriptor]) { (_, samples, error) in
+        
+        var output: [[String: Any]] = []
+        
+        let workoutQuery = HKSampleQuery(sampleType: HKObjectType.workoutType(), predicate: predicate, limit: _limit,
+                                         sortDescriptors: [sortDescriptor]) { [self](_, samples, error) in
 
             guard let workouts = samples as? [HKWorkout], error == nil else {
                 print(error ?? "foo")
                 
                 return
             }
-            
-            print(workouts)
-            //completion(workouts, nil)
-            
+
             for workout in workouts {
-                print(workout.startDate)
-                print(workout.duration)
-                print(getActivityTypeAsString(workout.workoutActivityType))
-                print("---- Workout Details ----")
-                print("Activity Type: \(workout.workoutActivityType.rawValue.description)")
-                print("Start Date: \(workout.startDate)")
-                print("End Date: \(workout.endDate)")
-                print("Duration: \(workout.duration) seconds")
-                print("Total Energy Burned: \(String(describing: workout.totalEnergyBurned?.doubleValue(for: HKUnit.kilocalorie()))) kcal")
-                print("Total Distance: \(String(describing: workout.totalDistance?.doubleValue(for: HKUnit.meter()))) meters")
-                if let heartRate = workout.totalFlightsClimbed {
-                    print("Total Flights Climbed: \(heartRate)")
+                
+                var totalEnergyBurnedData: Double?
+                var totalDistanceData: Double?
+                var totalFlightsClimbedData: Double?
+                var totalSwimmingStrokeCountData: Double?
+
+                var unitTotalEnergyBurned: HKUnit?
+                var unitTotalDistance: HKUnit?
+                var unitTotalFlightsClimbed: HKUnit?
+                var unitTotalSwimmingStrokeCount: HKUnit?
+                
+
+                if let totalEnergyBurned = workout.totalEnergyBurned {
+                    if totalEnergyBurned.is(compatibleWith: HKUnit.kilocalorie()) {
+                        unitTotalEnergyBurned = HKUnit.kilocalorie()
+                    }
+
+                    if let unitTotalEnergyBurned = unitTotalEnergyBurned {
+                        totalEnergyBurnedData = totalEnergyBurned.doubleValue(for: unitTotalEnergyBurned)
+                    }
                 }
-                print("-------------------------")
+               
+
+                if let totalDistance = workout.totalDistance {
+                    if totalDistance.is(compatibleWith: HKUnit.meter()) {
+                        unitTotalDistance = HKUnit.meter()
+                    }
+                    
+                    if let unitTotalDistance = unitTotalDistance {
+                        totalDistanceData = totalDistance.doubleValue(for: unitTotalDistance)
+                    }
+                }
+                
+                if let totalFlightsClimbed = workout.totalFlightsClimbed {
+                    if totalFlightsClimbed.is(compatibleWith: HKUnit.count()) {
+                        unitTotalFlightsClimbed = HKUnit.count()
+                    }
+                    
+                    if let unitTotalFlightsClimbed = unitTotalFlightsClimbed {
+                        totalFlightsClimbedData = totalFlightsClimbed.doubleValue(for: unitTotalFlightsClimbed)
+                    }
+                }
+                
+                
+                if let totalSwimmingStrokeCount = workout.totalSwimmingStrokeCount {
+                    if totalSwimmingStrokeCount.is(compatibleWith: HKUnit.count()) {
+                        unitTotalSwimmingStrokeCount = HKUnit.count()
+                    }
+                    
+                    if let unitTotalSwimmingStrokeCount = unitTotalSwimmingStrokeCount {
+                        totalSwimmingStrokeCountData = totalSwimmingStrokeCount.doubleValue(for: unitTotalSwimmingStrokeCount)
+                    }
+                }
+                
+                
+                
+                var workoutData: [String: Any] = [
+                    "uuid": workout.uuid.uuidString,
+                    "startDate": ISO8601DateFormatter().string(from: workout.startDate),
+                    "endDate": ISO8601DateFormatter().string(from: workout.endDate),
+                    "duration": workout.duration,
+                    "device": getDeviceInformation(device: workout.device),
+                    "source": workout.sourceRevision.source.name,
+                    "sourceBundleId": workout.sourceRevision.source.bundleIdentifier,
+                    "workoutActivityId": workout.workoutActivityType.rawValue,
+                    "workoutActivityName": getActivityTypeAsString(workout.workoutActivityType)
+                ]
+
+                if let totalEnergyBurnedData = totalEnergyBurnedData {
+                    workoutData["totalEnergyBurned"] = totalEnergyBurnedData
+                }
+
+                if let totalDistanceData = totalDistanceData {
+                    workoutData["totalDistance"] = totalDistanceData
+               
+                }
+
+                if let totalFlightsClimbedData = totalFlightsClimbedData {
+                    workoutData["totalFlightsClimbed"] = totalFlightsClimbedData
+                }
+
+                if let totalSwimmingStrokeCountData = totalSwimmingStrokeCountData {
+                    workoutData["totalSwimmingStrokeCount"] = totalSwimmingStrokeCountData
+                }
+                
+                
+                
+                output.append(workoutData)         
+           
             }
+
             
-            call.resolve()
+            call.resolve(["data": output])
         }
         
         healthStore.execute(workoutQuery)
+    }
+    
+    
+    func getDeviceInformation(device: HKDevice?) -> [String: String?] {
+        guard let device = device else {
+            return [:]
+        }
+
+        let deviceInformation: [String: String?] = [
+            "name": device.name,
+            "model": device.model,
+            "manufacturer": device.manufacturer,
+            "hardwareVersion": device.hardwareVersion,
+            "softwareVersion": device.softwareVersion,
+        ]
+
+        return deviceInformation
     }
 }
