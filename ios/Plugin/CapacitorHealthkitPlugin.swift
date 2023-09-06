@@ -154,10 +154,9 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
     }
     
     @objc func getWorkouts(_ call: CAPPluginCall) {
-        
         guard let startDateString = call.options["startDate"] as? String else {
-                   return call.reject("startDate is required.")
-               }
+            return call.reject("startDate is required.")
+        }
         
         let endDateString = call.options["endDate"] as? String
 
@@ -176,13 +175,12 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                                          sortDescriptors: [sortDescriptor]) { [self](_, samples, error) in
 
             guard let workouts = samples as? [HKWorkout], error == nil else {
-                print(error ?? "foo")
+                print(error!)
                 
                 return
             }
 
             for workout in workouts {
-                
                 var totalEnergyBurnedData: Double?
                 var totalDistanceData: Double?
                 var totalFlightsClimbedData: Double?
@@ -193,7 +191,6 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 var unitTotalFlightsClimbed: HKUnit?
                 var unitTotalSwimmingStrokeCount: HKUnit?
                 
-
                 if let totalEnergyBurned = workout.totalEnergyBurned {
                     if totalEnergyBurned.is(compatibleWith: HKUnit.kilocalorie()) {
                         unitTotalEnergyBurned = HKUnit.kilocalorie()
@@ -204,7 +201,6 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                     }
                 }
                
-
                 if let totalDistance = workout.totalDistance {
                     if totalDistance.is(compatibleWith: HKUnit.meter()) {
                         unitTotalDistance = HKUnit.meter()
@@ -225,7 +221,6 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                     }
                 }
                 
-                
                 if let totalSwimmingStrokeCount = workout.totalSwimmingStrokeCount {
                     if totalSwimmingStrokeCount.is(compatibleWith: HKUnit.count()) {
                         unitTotalSwimmingStrokeCount = HKUnit.count()
@@ -236,8 +231,6 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                     }
                 }
                 
-                
-                
                 var workoutData: [String: Any] = [
                     "uuid": workout.uuid.uuidString,
                     "startDate": ISO8601DateFormatter().string(from: workout.startDate),
@@ -246,34 +239,29 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                     "device": getDeviceInformation(device: workout.device),
                     "source": workout.sourceRevision.source.name,
                     "sourceBundleId": workout.sourceRevision.source.bundleIdentifier,
-                    "workoutActivityId": workout.workoutActivityType.rawValue,
-                    "workoutActivityName": getActivityTypeAsString(workout.workoutActivityType)
+                    "workoutActivityType": getActivityTypeAsString(workout.workoutActivityType),
+                    "workoutActivityTypeId": workout.workoutActivityType.rawValue
                 ]
 
-                if let totalEnergyBurnedData = totalEnergyBurnedData {
+                if let totalEnergyBurnedData {
                     workoutData["totalEnergyBurned"] = totalEnergyBurnedData
                 }
 
-                if let totalDistanceData = totalDistanceData {
+                if let totalDistanceData {
                     workoutData["totalDistance"] = totalDistanceData
-               
                 }
 
-                if let totalFlightsClimbedData = totalFlightsClimbedData {
+                if let totalFlightsClimbedData {
                     workoutData["totalFlightsClimbed"] = totalFlightsClimbedData
                 }
 
-                if let totalSwimmingStrokeCountData = totalSwimmingStrokeCountData {
+                if let totalSwimmingStrokeCountData {
                     workoutData["totalSwimmingStrokeCount"] = totalSwimmingStrokeCountData
                 }
                 
-                
-                
-                output.append(workoutData)         
-           
+                output.append(workoutData)
             }
 
-            
             call.resolve(["data": output])
         }
         
