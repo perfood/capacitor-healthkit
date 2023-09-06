@@ -4,8 +4,9 @@ import type {
   AuthorizationStatus,
   CapacitorHealthkitPlugin,
   GetAuthorizationStatusOptions,
-  GetWorkoutsQueryOptions,
+  WorkoutsQueryOptions,
   StatisticsCollectionOptions,
+  BodyMassQueryOptions,
 } from './definitions';
 
 export class CapacitorHealthkitWeb
@@ -38,8 +39,13 @@ export class CapacitorHealthkitWeb
     throw new Error('Method not implemented.');
   }
 
-  async getWorkouts(options: GetWorkoutsQueryOptions): Promise<any> {
-    console.log({options})
+  async getBodyMassEntries(options: BodyMassQueryOptions): Promise<any> {
+    console.log({ options });
+    throw new Error('Method not implemented.');
+  }
+
+  async getWorkouts(options: WorkoutsQueryOptions): Promise<any> {
+    console.log({ options });
     throw new Error('Method not implemented.');
   }
 }

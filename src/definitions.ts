@@ -5,7 +5,8 @@ export interface CapacitorHealthkitPlugin {
     options: GetAuthorizationStatusOptions,
   ): Promise<{ status: AuthorizationStatus }>;
   getStatisticsCollection(options: StatisticsCollectionOptions): Promise<any>; // TODO: add response type
-  getWorkouts(options: GetWorkoutsQueryOptions): Promise<any>;
+  getBodyMassEntries(options: BodyMassQueryOptions): Promise<any>; // TODO: add response type
+  getWorkouts(options: WorkoutsQueryOptions): Promise<any>;
 }
 
 export interface RequestAuthorizationOptions {
@@ -30,7 +31,13 @@ export interface StatisticsCollectionOptions {
   interval: StatisticsCollectionQueryInterval;
   quantityTypeSampleName: QuantityType;
 }
-export interface GetWorkoutsQueryOptions {
+export interface WorkoutsQueryOptions {
+  startDate: string;
+  endDate?: string;
+  limit?: number;
+}
+
+export interface BodyMassQueryOptions {
   startDate: string;
   endDate?: string;
   limit?: number;

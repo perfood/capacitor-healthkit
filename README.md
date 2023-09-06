@@ -17,6 +17,7 @@ npx cap sync
 * [`isAvailable()`](#isavailable)
 * [`getAuthorizationStatus(...)`](#getauthorizationstatus)
 * [`getStatisticsCollection(...)`](#getstatisticscollection)
+* [`getBodyMassEntries(...)`](#getbodymassentries)
 * [`getWorkouts(...)`](#getworkouts)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
@@ -78,15 +79,30 @@ getStatisticsCollection(options: StatisticsCollectionOptions) => Promise<any>
 --------------------
 
 
+### getBodyMassEntries(...)
+
+```typescript
+getBodyMassEntries(options: BodyMassQueryOptions) => Promise<any>
+```
+
+| Param         | Type                                                                  |
+| ------------- | --------------------------------------------------------------------- |
+| **`options`** | <code><a href="#bodymassqueryoptions">BodyMassQueryOptions</a></code> |
+
+**Returns:** <code>Promise&lt;any&gt;</code>
+
+--------------------
+
+
 ### getWorkouts(...)
 
 ```typescript
-getWorkouts(options: GetWorkoutsQueryOptions) => Promise<any>
+getWorkouts(options: WorkoutsQueryOptions) => Promise<any>
 ```
 
-| Param         | Type                                                                        |
-| ------------- | --------------------------------------------------------------------------- |
-| **`options`** | <code><a href="#getworkoutsqueryoptions">GetWorkoutsQueryOptions</a></code> |
+| Param         | Type                                                                  |
+| ------------- | --------------------------------------------------------------------- |
+| **`options`** | <code><a href="#workoutsqueryoptions">WorkoutsQueryOptions</a></code> |
 
 **Returns:** <code>Promise&lt;any&gt;</code>
 
@@ -131,7 +147,16 @@ getWorkouts(options: GetWorkoutsQueryOptions) => Promise<any>
 | **`value`** | <code>number</code>                                                       |
 
 
-#### GetWorkoutsQueryOptions
+#### BodyMassQueryOptions
+
+| Prop            | Type                |
+| --------------- | ------------------- |
+| **`startDate`** | <code>string</code> |
+| **`endDate`**   | <code>string</code> |
+| **`limit`**     | <code>number</code> |
+
+
+#### WorkoutsQueryOptions
 
 | Prop            | Type                |
 | --------------- | ------------------- |
