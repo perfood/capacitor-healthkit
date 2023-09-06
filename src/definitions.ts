@@ -4,9 +4,9 @@ export interface CapacitorHealthkitPlugin {
   getAuthorizationStatus(
     options: GetAuthorizationStatusOptions,
   ): Promise<{ status: AuthorizationStatus }>;
-  getStatisticsCollection(options: StatisticsCollectionOptions): Promise<any>; // TODO: add response type
-  getBodyMassEntries(options: BodyMassQueryOptions): Promise<any>; // TODO: add response type
-  getWorkouts(options: WorkoutsQueryOptions): Promise<any>;
+  getStatisticsCollection(options: StatisticsCollectionOptions): Promise<StatisticsCollectionOutput>;
+  getBodyMassEntries(options: BodyMassQueryOptions): Promise<BodyMassQueryOutput>; 
+  getWorkouts(options: WorkoutsQueryOptions): Promise<WorkoutsQueryOutput>;
 }
 
 export interface RequestAuthorizationOptions {
@@ -41,6 +41,51 @@ export interface BodyMassQueryOptions {
   startDate: string;
   endDate?: string;
   limit?: number;
+}
+
+export interface StatisticsCollectionOutput {
+  data: {
+    date: string;
+    value: number;
+  }[];
+}
+
+export interface BodyMassQueryOutput {
+  data: {
+    date: string;
+    value: number;
+    unit: string;
+    uuid: string;
+    sourceName: string;
+    sourceBundleId: string;
+  }[];
+}
+
+export interface WorkoutsQueryOutput {
+  data: {
+    uuid: string;
+    startDate: string;
+    endDate: string;
+    duration: number;
+    device?: {
+      name?: string | null;
+      model?: string | null;
+      manufacturer?: string | null;
+      hardwareVersion?: string | null;
+      softwareVersion?: string | null;
+      firmwareVersion?: string | null; 
+      localIdentifier?: string | null; 
+      udiDeviceIdentifier?: string | null; 
+    };
+    source: string;
+    sourceBundleId: string;
+    workoutActivityType: string;
+    workoutActivityTypeId: number;
+    totalEnergyBurned?: number;
+    totalDistance?: number;
+    totalFlightsClimbed?: number;
+    totalSwimmingStrokeCount?: number;
+  }[];
 }
 
 export interface StatisticsCollectionQueryInterval {

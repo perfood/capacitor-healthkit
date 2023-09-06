@@ -7,6 +7,9 @@ import type {
   WorkoutsQueryOptions,
   StatisticsCollectionOptions,
   BodyMassQueryOptions,
+  StatisticsCollectionOutput,
+  WorkoutsQueryOutput,
+  BodyMassQueryOutput,
 } from './definitions';
 
 export class CapacitorHealthkitWeb
@@ -34,17 +37,17 @@ export class CapacitorHealthkitWeb
 
   async getStatisticsCollection(
     options: StatisticsCollectionOptions,
-  ): Promise<any> {
+  ): Promise<StatisticsCollectionOutput> {
     console.log({ options });
     throw new Error('Method not implemented.');
   }
 
-  async getBodyMassEntries(options: BodyMassQueryOptions): Promise<any> {
+  async getBodyMassEntries(options: BodyMassQueryOptions): Promise<BodyMassQueryOutput> {
     console.log({ options });
     throw new Error('Method not implemented.');
   }
 
-  async getWorkouts(options: WorkoutsQueryOptions): Promise<any> {
+  async getWorkouts(options: WorkoutsQueryOptions): Promise<WorkoutsQueryOutput> {
     console.log({ options });
     throw new Error('Method not implemented.');
   }
