@@ -2,163 +2,201 @@ import Foundation
 import HealthKit
 
 func getActivityTypeAsString(_ activityType: HKWorkoutActivityType) -> String {
-     switch activityType {
-         case HKWorkoutActivityType.americanFootball:
-             return "American Football"
-         case HKWorkoutActivityType.archery:
-             return "Archery"
-         case HKWorkoutActivityType.australianFootball:
-             return "Australian Football"
-         case HKWorkoutActivityType.badminton:
-             return "Badminton"
-         case HKWorkoutActivityType.baseball:
-             return "Baseball"
-         case HKWorkoutActivityType.basketball:
-             return "Basketball"
-         case HKWorkoutActivityType.bowling:
-             return "Bowling"
-         case HKWorkoutActivityType.boxing:
-             return "Boxing"
-         case HKWorkoutActivityType.climbing:
-             return "Climbing"
-         case HKWorkoutActivityType.crossTraining:
-             return "Cross Training"
-         case HKWorkoutActivityType.curling:
-             return "Curling"
-         case HKWorkoutActivityType.cycling:
-             return "Cycling"
-         case HKWorkoutActivityType.dance:
-             return "Dance"
-         case HKWorkoutActivityType.danceInspiredTraining:
-             return "Dance Inspired Training"
-         case HKWorkoutActivityType.elliptical:
-             return "Elliptical"
-         case HKWorkoutActivityType.equestrianSports:
-             return "Equestrian Sports"
-         case HKWorkoutActivityType.fencing:
-             return "Fencing"
-         case HKWorkoutActivityType.fishing:
-             return "Fishing"
-         case HKWorkoutActivityType.functionalStrengthTraining:
-             return "Functional Strength Training"
-         case HKWorkoutActivityType.golf:
-             return "Golf"
-         case HKWorkoutActivityType.gymnastics:
-             return "Gymnastics"
-         case HKWorkoutActivityType.handball:
-             return "Handball"
-         case HKWorkoutActivityType.hiking:
-             return "Hiking"
-         case HKWorkoutActivityType.hockey:
-             return "Hockey"
-         case HKWorkoutActivityType.hunting:
-             return "Hunting"
-         case HKWorkoutActivityType.lacrosse:
-             return "Lacrosse"
-         case HKWorkoutActivityType.martialArts:
-             return "Martial Arts"
-         case HKWorkoutActivityType.mindAndBody:
-             return "Mind and Body"
-         case HKWorkoutActivityType.mixedMetabolicCardioTraining:
-             return "Mixed Metabolic Cardio Training"
-         case HKWorkoutActivityType.paddleSports:
-             return "Paddle Sports"
-         case HKWorkoutActivityType.play:
-             return "Play"
-         case HKWorkoutActivityType.preparationAndRecovery:
-             return "Preparation and Recovery"
-         case HKWorkoutActivityType.racquetball:
-             return "Racquetball"
-         case HKWorkoutActivityType.rowing:
-             return "Rowing"
-         case HKWorkoutActivityType.rugby:
-             return "Rugby"
-         case HKWorkoutActivityType.running:
-             return "Running"
-         case HKWorkoutActivityType.sailing:
-             return "Sailing"
-         case HKWorkoutActivityType.skatingSports:
-             return "Skating Sports"
-         case HKWorkoutActivityType.snowSports:
-             return "Snow Sports"
-         case HKWorkoutActivityType.soccer:
-             return "Soccer"
-         case HKWorkoutActivityType.softball:
-             return "Softball"
-         case HKWorkoutActivityType.squash:
-             return "Squash"
-         case HKWorkoutActivityType.stairClimbing:
-             return "Stair Climbing"
-         case HKWorkoutActivityType.surfingSports:
-             return "Surfing Sports"
-         case HKWorkoutActivityType.swimming:
-             return "Swimming"
-         case HKWorkoutActivityType.tableTennis:
-             return "Table Tennis"
-         case HKWorkoutActivityType.tennis:
-             return "Tennis"
-         case HKWorkoutActivityType.trackAndField:
-             return "Track and Field"
-         case HKWorkoutActivityType.traditionalStrengthTraining:
-             return "Traditional Strength Training"
-         case HKWorkoutActivityType.volleyball:
-             return "Volleyball"
-         case HKWorkoutActivityType.walking:
-             return "Walking"
-         case HKWorkoutActivityType.waterFitness:
-             return "Water Fitness"
-         case HKWorkoutActivityType.waterPolo:
-             return "Water Polo"
-         case HKWorkoutActivityType.waterSports:
-             return "Water Sports"
-         case HKWorkoutActivityType.wrestling:
-             return "Wrestling"
-         case HKWorkoutActivityType.yoga:
-             return "Yoga"
-         // iOS 10
-         case HKWorkoutActivityType.barre:
-             return "Barre"
-         case HKWorkoutActivityType.coreTraining:
-             return "Core Training"
-         case HKWorkoutActivityType.crossCountrySkiing:
-             return "Cross Country Skiing"
-         case HKWorkoutActivityType.downhillSkiing:
-             return "Downhill Skiing"
-         case HKWorkoutActivityType.flexibility:
-             return "Flexibility"
-         case HKWorkoutActivityType.highIntensityIntervalTraining:
-             return "High Intensity Interval Training"
-         case HKWorkoutActivityType.jumpRope:
-             return "Jump Rope"
-         case HKWorkoutActivityType.kickboxing:
-             return "Kickboxing"
-         case HKWorkoutActivityType.pilates:
-             return "Pilates"
-         case HKWorkoutActivityType.snowboarding:
-             return "Snowboarding"
-         case HKWorkoutActivityType.stairs:
-             return "Stairs"
-         case HKWorkoutActivityType.stepTraining:
-             return "Step Training"
-         case HKWorkoutActivityType.wheelchairWalkPace:
-             return "Wheelchair Walk Pace"
-         case HKWorkoutActivityType.wheelchairRunPace:
-             return "Wheelchair Run Pace"
-         // iOS 11
-         case HKWorkoutActivityType.taiChi:
-             return "Tai Chi"
-         case HKWorkoutActivityType.mixedCardio:
-             return "Mixed Cardio"
-         case HKWorkoutActivityType.handCycling:
-             return "Hand Cycling"
-         // iOS 13
-         case HKWorkoutActivityType.discSports:
-             return "Disc Sports"
-         case HKWorkoutActivityType.fitnessGaming:
-             return "Fitness Gaming"
-         // Catch-all
-         default:
-             return "Other"
-     }
+    // see https://developer.apple.com/documentation/healthkit/hkworkoutactivitytype
+    switch activityType {
+        // Individual sports
+        case HKWorkoutActivityType.archery:
+            return "archery"
+        case HKWorkoutActivityType.bowling:
+            return "bowling"
+        case HKWorkoutActivityType.fencing:
+            return "fencing"
+        case HKWorkoutActivityType.gymnastics:
+            return "gymnastics"
+        case HKWorkoutActivityType.trackAndField:
+            return "trackAndField"
+
+        // Team sports
+        case HKWorkoutActivityType.americanFootball:
+            return "americanFootball"
+        case HKWorkoutActivityType.australianFootball:
+            return "australianFootball"
+        case HKWorkoutActivityType.baseball:
+            return "baseball"
+        case HKWorkoutActivityType.basketball:
+            return "basketball"
+        case HKWorkoutActivityType.cricket:
+            return "cricket"
+        case HKWorkoutActivityType.discSports:
+            return "discSports"
+        case HKWorkoutActivityType.handball:
+            return "handball"
+        case HKWorkoutActivityType.hockey:
+            return "hockey"
+        case HKWorkoutActivityType.lacrosse:
+            return "lacrosse"
+        case HKWorkoutActivityType.rugby:
+            return "rugby"
+        case HKWorkoutActivityType.soccer:
+            return "soccer"
+        case HKWorkoutActivityType.softball:
+            return "softball"
+        case HKWorkoutActivityType.volleyball:
+            return "volleyball"
+        
+        // Exercise and fitness
+        case HKWorkoutActivityType.preparationAndRecovery:
+            return "preparationAndRecovery"
+        case HKWorkoutActivityType.flexibility:
+            return "flexibility"
+        case HKWorkoutActivityType.cooldown:
+            return "cooldown"
+        case HKWorkoutActivityType.walking:
+            return "walking"
+        case HKWorkoutActivityType.running:
+            return "running"
+        case HKWorkoutActivityType.wheelchairWalkPace:
+            return "wheelchairWalkPace"
+        case HKWorkoutActivityType.wheelchairRunPace:
+            return "wheelchairRunPace"
+        case HKWorkoutActivityType.cycling:
+            return "cycling"
+        case HKWorkoutActivityType.handCycling:
+            return "handCycling"
+        case HKWorkoutActivityType.coreTraining:
+            return "coreTraining"
+        case HKWorkoutActivityType.elliptical:
+            return "elliptical"
+        case HKWorkoutActivityType.functionalStrengthTraining:
+            return "functionalStrengthTraining"
+        case HKWorkoutActivityType.traditionalStrengthTraining:
+            return "traditionalStrengthTraining"
+        case HKWorkoutActivityType.crossTraining:
+            return "crossTraining"
+        case HKWorkoutActivityType.mixedCardio:
+            return "mixedCardio"
+        case HKWorkoutActivityType.highIntensityIntervalTraining:
+            return "highIntensityIntervalTraining"
+        case HKWorkoutActivityType.jumpRope:
+            return "jumpRope"
+        case HKWorkoutActivityType.stairClimbing:
+            return "stairClimbing"
+        case HKWorkoutActivityType.stairs:
+            return "stairs"
+        case HKWorkoutActivityType.stepTraining:
+            return "stepTraining"
+        case HKWorkoutActivityType.fitnessGaming:
+            return "fitnessGaming"
+        
+        // Studio activities
+        case HKWorkoutActivityType.barre:
+            return "barre"
+        case HKWorkoutActivityType.cardioDance:
+            return "cardioDance"
+        case HKWorkoutActivityType.socialDance:
+            return "socialDance"
+        case HKWorkoutActivityType.yoga:
+            return "yoga"
+        case HKWorkoutActivityType.mindAndBody:
+            return "mindAndBody"
+        case HKWorkoutActivityType.pilates:
+            return "pilates"
+
+        // Racket sports
+        case HKWorkoutActivityType.badminton:
+            return "badminton"
+        case HKWorkoutActivityType.pickleball:
+            return "pickleball"
+        case HKWorkoutActivityType.racquetball:
+            return "racquetball"
+        case HKWorkoutActivityType.squash:
+            return "squash"
+        case HKWorkoutActivityType.tableTennis:
+            return "tableTennis"
+        case HKWorkoutActivityType.tennis:
+            return "tennis"
+        
+        // Outdoor activities
+        case HKWorkoutActivityType.climbing:
+            return "climbing"
+        case HKWorkoutActivityType.equestrianSports:
+            return "equestrianSports"
+        case HKWorkoutActivityType.fishing:
+            return "fishing"
+        case HKWorkoutActivityType.golf:
+            return "golf"
+        case HKWorkoutActivityType.hiking:
+            return "hiking"
+        case HKWorkoutActivityType.hunting:
+            return "hunting"
+        case HKWorkoutActivityType.play:
+            return "play"
+        
+        // Snow and ice sports
+        case HKWorkoutActivityType.crossCountrySkiing:
+            return "crossCountrySkiing"
+        case HKWorkoutActivityType.curling:
+            return "curling"
+        case HKWorkoutActivityType.downhillSkiing:
+            return "downhillSkiing"
+        case HKWorkoutActivityType.snowSports:
+            return "snowSports"
+        case HKWorkoutActivityType.snowboarding:
+            return "snowboarding"
+        case HKWorkoutActivityType.skatingSports:
+            return "skatingSports"
+        
+        // Water activities
+        case HKWorkoutActivityType.paddleSports:
+            return "padleSports"
+        case HKWorkoutActivityType.rowing:
+            return "rowing"
+        case HKWorkoutActivityType.sailing:
+            return "sailing"
+        case HKWorkoutActivityType.surfingSports:
+            return "surfingSports"
+        case HKWorkoutActivityType.swimming:
+            return "swimming"
+        case HKWorkoutActivityType.waterFitness:
+            return "waterFitness"
+        case HKWorkoutActivityType.waterPolo:
+            return "waterPolo"
+        case HKWorkoutActivityType.waterSports:
+            return "waterSports"
+        
+        // Martial arts
+        case HKWorkoutActivityType.boxing:
+            return "boxing"
+        case HKWorkoutActivityType.kickboxing:
+            return "kickboxing"
+        case HKWorkoutActivityType.martialArts:
+            return "martialArts"
+        case HKWorkoutActivityType.taiChi:
+            return "taiChi"
+        case HKWorkoutActivityType.wrestling:
+            return "wrestling"
+        
+        // Deprecated activity types
+        case HKWorkoutActivityType.dance:
+            return "dance"
+        case HKWorkoutActivityType.danceInspiredTraining:
+            return "danceInspiredTraining"
+        case HKWorkoutActivityType.mixedMetabolicCardioTraining:
+            return "mixedMetabolicCardioTraining"
+        
+        // Multisport activities
+        case HKWorkoutActivityType.swimBikeRun:
+            return "swimBikeRun"
+        case HKWorkoutActivityType.transition:
+            return "transition"
+                    
+        // Enumeration Cases
+        case HKWorkoutActivityType.underwaterDiving: // beta
+            return "underwaterDiving"
+        
+        // HKWorkoutActivityType.other and everything else
+        default:
+            return "other"
+    }
  }
 
