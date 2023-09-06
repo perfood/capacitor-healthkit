@@ -9,4 +9,5 @@ CAP_PLUGIN(CapacitorHealthkitPlugin, "CapacitorHealthkit",
            CAP_PLUGIN_METHOD(getAuthorizationStatus, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(getStatisticsCollection, CAPPluginReturnPromise);
            CAP_PLUGIN_METHOD(getBodyMassEntries, CAPPluginReturnPromise);
+           CAP_PLUGIN_METHOD(getWorkouts, CAPPluginReturnPromise);
 )

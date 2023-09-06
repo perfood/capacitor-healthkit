@@ -18,6 +18,7 @@
 		8360E4DD2A9C6D41003FA5DF /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8360E4DC2A9C6D41003FA5DF /* Device.swift */; };
 		839B83522A8CA77500B75931 /* SampleTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 839B83512A8CA77500B75931 /* SampleTypes.swift */; };
 		83D3EDA62A8CC7B600F6D849 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3EDA52A8CC7B600F6D849 /* Date.swift */; };
+		83D3EDA82A975FAD00F6D849 /* ActivityType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3EDA72A975FAD00F6D849 /* ActivityType.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		8360E4DC2A9C6D41003FA5DF /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		839B83512A8CA77500B75931 /* SampleTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleTypes.swift; sourceTree = "<group>"; };
 		83D3EDA52A8CC7B600F6D849 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
+		83D3EDA72A975FAD00F6D849 /* ActivityType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityType.swift; sourceTree = "<group>"; };
 		91781294A431A2A7CC6EB714 /* Pods-Plugin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Plugin.release.xcconfig"; path = "Pods/Target Support Files/Pods-Plugin/Pods-Plugin.release.xcconfig"; sourceTree = "<group>"; };
 		96ED1B6440D6672E406C8D19 /* Pods-PluginTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PluginTests/Pods-PluginTests.debug.xcconfig"; sourceTree = "<group>"; };
 		F65BB2953ECE002E1EF3E424 /* Pods-PluginTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PluginTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-PluginTests/Pods-PluginTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 				839B83512A8CA77500B75931 /* SampleTypes.swift */,
 				83D3EDA52A8CC7B600F6D849 /* Date.swift */,
 				8360E4DC2A9C6D41003FA5DF /* Device.swift */,
+				83D3EDA72A975FAD00F6D849 /* ActivityType.swift */,
 			);
 			path = Plugin;
 			sourceTree = "<group>";
@@ -315,6 +318,7 @@
 				50E1A94820377CB70090CE1A /* CapacitorHealthkitPlugin.swift in Sources */,
 				83D3EDA62A8CC7B600F6D849 /* Date.swift in Sources */,
 				50ADFFA82020EE4F00D50D53 /* CapacitorHealthkitPlugin.m in Sources */,
+				83D3EDA82A975FAD00F6D849 /* ActivityType.swift in Sources */,
 				839B83522A8CA77500B75931 /* SampleTypes.swift in Sources */,
 				8360E4DD2A9C6D41003FA5DF /* Device.swift in Sources */,
 			);

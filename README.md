@@ -18,6 +18,7 @@ npx cap sync
 * [`getAuthorizationStatus(...)`](#getauthorizationstatus)
 * [`getStatisticsCollection(...)`](#getstatisticscollection)
 * [`getBodyMassEntries()`](#getbodymassentries)
+* [`getWorkouts(...)`](#getworkouts)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
 
@@ -89,6 +90,21 @@ getBodyMassEntries() => Promise<any>
 --------------------
 
 
+### getWorkouts(...)
+
+```typescript
+getWorkouts(options: GetWorkoutsQueryOptions) => Promise<any>
+```
+
+| Param         | Type                                                                        |
+| ------------- | --------------------------------------------------------------------------- |
+| **`options`** | <code><a href="#getworkoutsqueryoptions">GetWorkoutsQueryOptions</a></code> |
+
+**Returns:** <code>Promise&lt;any&gt;</code>
+
+--------------------
+
+
 ### Interfaces
 
 
@@ -125,6 +141,15 @@ getBodyMassEntries() => Promise<any>
 | ----------- | ------------------------------------------------------------------------- |
 | **`unit`**  | <code>'second' \| 'minute' \| 'hour' \| 'day' \| 'month' \| 'year'</code> |
 | **`value`** | <code>number</code>                                                       |
+
+
+#### GetWorkoutsQueryOptions
+
+| Prop            | Type                |
+| --------------- | ------------------- |
+| **`startDate`** | <code>string</code> |
+| **`endDate`**   | <code>string</code> |
+| **`limit`**     | <code>number</code> |
 
 
 ### Type Aliases
