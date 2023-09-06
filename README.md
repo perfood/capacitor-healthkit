@@ -17,7 +17,7 @@ npx cap sync
 * [`isAvailable()`](#isavailable)
 * [`getAuthorizationStatus(...)`](#getauthorizationstatus)
 * [`getStatisticsCollection(...)`](#getstatisticscollection)
-* [`getWorkouts()`](#getworkouts)
+* [`getWorkouts(...)`](#getworkouts)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
 
@@ -78,11 +78,15 @@ getStatisticsCollection(options: StatisticsCollectionOptions) => Promise<any>
 --------------------
 
 
-### getWorkouts()
+### getWorkouts(...)
 
 ```typescript
-getWorkouts() => Promise<any>
+getWorkouts(options: GetWorkoutsQueryOptions) => Promise<any>
 ```
+
+| Param         | Type                                                                        |
+| ------------- | --------------------------------------------------------------------------- |
+| **`options`** | <code><a href="#getworkoutsqueryoptions">GetWorkoutsQueryOptions</a></code> |
 
 **Returns:** <code>Promise&lt;any&gt;</code>
 
@@ -125,6 +129,15 @@ getWorkouts() => Promise<any>
 | ----------- | ------------------------------------------------------------------------- |
 | **`unit`**  | <code>'second' \| 'minute' \| 'hour' \| 'day' \| 'month' \| 'year'</code> |
 | **`value`** | <code>number</code>                                                       |
+
+
+#### GetWorkoutsQueryOptions
+
+| Prop            | Type                |
+| --------------- | ------------------- |
+| **`startDate`** | <code>string</code> |
+| **`endDate`**   | <code>string</code> |
+| **`limit`**     | <code>number</code> |
 
 
 ### Type Aliases

@@ -33,7 +33,6 @@ export interface StatisticsCollectionOptions {
 export interface GetWorkoutsQueryOptions {
   startDate: string;
   endDate?: string;
-  anchorDate: string;
   limit?: number;
 }
 
