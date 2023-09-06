@@ -190,9 +190,9 @@ func getActivityTypeAsString(_ activityType: HKWorkoutActivityType) -> String {
         case HKWorkoutActivityType.transition:
             return "transition"
                     
-        // Enumeration Cases
-        case HKWorkoutActivityType.underwaterDiving: // beta
-            return "underwaterDiving"
+        // // Enumeration Cases
+        // case HKWorkoutActivityType.underwaterDiving: // beta
+        //     return "underwaterDiving"
         
         // HKWorkoutActivityType.other and everything else
         default:

@@ -150,8 +150,8 @@ export type ActivityType =
   | 'swimBikeRun'
   | 'transition'
 
-  // Enumeration Cases
-  | 'underwaterDiving'
+  // // Enumeration Cases
+  // | 'underwaterDiving'
 
   // HKWorkoutActivityType.other and everything else
   | 'other';
