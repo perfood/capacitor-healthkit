@@ -177,7 +177,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             guard let workouts = samples as? [HKWorkout], error == nil else {
                 print(error!)
                 
-                return
+                return call.reject(error!.localizedDescription)
             }
 
             for workout in workouts {
