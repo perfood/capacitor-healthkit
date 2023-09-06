@@ -92,8 +92,6 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             return call.reject("interval is not valid")
         }
                         
-        let calendar = Calendar.current
-
         let intervalComponents = getInterval(interval.unit, interval.value)
 
         let anchorDate = getDateFromString(inputDate: anchorDateInput)
