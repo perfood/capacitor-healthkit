@@ -1,18 +1,32 @@
 import Foundation
 import HealthKit
 
-func getDeviceInformation(device: HKDevice?) -> [String: String?]? {
+struct DeviceInformation {
+    let name: String?
+    let model: String?
+    let manufacturer: String?
+    let hardwareVersion: String?
+    let softwareVersion: String?
+    let firmwareVersion: String?
+    let localIdentifier: String?
+    let udiDeviceIdentifier: String?
+}
+
+func getDeviceInformation(device: HKDevice?) -> DeviceInformation? {
     if (device == nil) {
-        return nil;
+        return nil
     }
     
-    let deviceInformation: [String: String?] = [
-        "name": device?.name,
-        "model": device?.model,
-        "manufacturer": device?.manufacturer,
-        "hardwareVersion": device?.hardwareVersion,
-        "softwareVersion": device?.softwareVersion,
-    ];
+    let deviceInformation = DeviceInformation(
+        name: device?.name,
+        model: device?.model,
+        manufacturer: device?.manufacturer,
+        hardwareVersion: device?.hardwareVersion,
+        softwareVersion: device?.softwareVersion,
+        firmwareVersion: device?.firmwareVersion,
+        localIdentifier: device?.localIdentifier,
+        udiDeviceIdentifier: device?.udiDeviceIdentifier
+    )
             
     return deviceInformation;
 }

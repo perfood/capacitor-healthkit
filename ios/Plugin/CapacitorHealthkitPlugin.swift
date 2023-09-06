@@ -280,7 +280,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                     "startDate": ISO8601DateFormatter().string(from: workout.startDate),
                     "endDate": ISO8601DateFormatter().string(from: workout.endDate),
                     "duration": workout.duration,
-                    "device": getDeviceInformation(device: workout.device),
+                    "device": getDeviceInformation(device: workout.device) as Any,
                     "source": workout.sourceRevision.source.name,
                     "sourceBundleId": workout.sourceRevision.source.bundleIdentifier,
                     "workoutActivityType": getActivityTypeAsString(workout.workoutActivityType),
