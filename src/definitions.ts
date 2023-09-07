@@ -67,16 +67,7 @@ export interface WorkoutsQueryOutput {
     startDate: string;
     endDate: string;
     duration: number;
-    device?: {
-      name?: string | null;
-      model?: string | null;
-      manufacturer?: string | null;
-      hardwareVersion?: string | null;
-      softwareVersion?: string | null;
-      firmwareVersion?: string | null; 
-      localIdentifier?: string | null; 
-      udiDeviceIdentifier?: string | null; 
-    };
+    device?: HealthKitDevice;
     source: string;
     sourceBundleId: string;
     workoutActivityType: string;
@@ -86,6 +77,17 @@ export interface WorkoutsQueryOutput {
     totalFlightsClimbed?: number;
     totalSwimmingStrokeCount?: number;
   }[];
+}
+
+export interface HealthKitDevice {
+  name?: string ;
+  model?: string ;
+  manufacturer?: string ;
+  hardwareVersion?: string ;
+  softwareVersion?: string ;
+  firmwareVersion?: string; 
+  localIdentifier?: string ; 
+  udiDeviceIdentifier?: string;
 }
 
 export interface StatisticsCollectionQueryInterval {
