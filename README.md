@@ -67,14 +67,14 @@ getAuthorizationStatus(options: GetAuthorizationStatusOptions) => Promise<{ stat
 ### getStatisticsCollection(...)
 
 ```typescript
-getStatisticsCollection(options: StatisticsCollectionOptions) => Promise<any>
+getStatisticsCollection(options: StatisticsCollectionOptions) => Promise<StatisticsCollectionOutput>
 ```
 
 | Param         | Type                                                                                |
 | ------------- | ----------------------------------------------------------------------------------- |
 | **`options`** | <code><a href="#statisticscollectionoptions">StatisticsCollectionOptions</a></code> |
 
-**Returns:** <code>Promise&lt;any&gt;</code>
+**Returns:** <code>Promise&lt;<a href="#statisticscollectionoutput">StatisticsCollectionOutput</a>&gt;</code>
 
 --------------------
 
@@ -82,14 +82,14 @@ getStatisticsCollection(options: StatisticsCollectionOptions) => Promise<any>
 ### getBodyMassEntries(...)
 
 ```typescript
-getBodyMassEntries(options: BodyMassQueryOptions) => Promise<any>
+getBodyMassEntries(options: BodyMassQueryOptions) => Promise<BodyMassQueryOutput>
 ```
 
 | Param         | Type                                                                  |
 | ------------- | --------------------------------------------------------------------- |
 | **`options`** | <code><a href="#bodymassqueryoptions">BodyMassQueryOptions</a></code> |
 
-**Returns:** <code>Promise&lt;any&gt;</code>
+**Returns:** <code>Promise&lt;<a href="#bodymassqueryoutput">BodyMassQueryOutput</a>&gt;</code>
 
 --------------------
 
@@ -97,14 +97,14 @@ getBodyMassEntries(options: BodyMassQueryOptions) => Promise<any>
 ### getWorkouts(...)
 
 ```typescript
-getWorkouts(options: WorkoutsQueryOptions) => Promise<any>
+getWorkouts(options: WorkoutsQueryOptions) => Promise<WorkoutsQueryOutput>
 ```
 
 | Param         | Type                                                                  |
 | ------------- | --------------------------------------------------------------------- |
 | **`options`** | <code><a href="#workoutsqueryoptions">WorkoutsQueryOptions</a></code> |
 
-**Returns:** <code>Promise&lt;any&gt;</code>
+**Returns:** <code>Promise&lt;<a href="#workoutsqueryoutput">WorkoutsQueryOutput</a>&gt;</code>
 
 --------------------
 
@@ -128,6 +128,13 @@ getWorkouts(options: WorkoutsQueryOptions) => Promise<any>
 | **`sampleType`** | <code>string</code> |
 
 
+#### StatisticsCollectionOutput
+
+| Prop       | Type                                                                  |
+| ---------- | --------------------------------------------------------------------- |
+| **`data`** | <code>{ startDate: string; endDate: string; value: number; }[]</code> |
+
+
 #### StatisticsCollectionOptions
 
 | Prop                         | Type                                                                                            |
@@ -147,6 +154,13 @@ getWorkouts(options: WorkoutsQueryOptions) => Promise<any>
 | **`value`** | <code>number</code>                                                       |
 
 
+#### BodyMassQueryOutput
+
+| Prop       | Type                                                                                                                    |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **`data`** | <code>{ date: string; value: number; unit: string; uuid: string; sourceName: string; sourceBundleId: string; }[]</code> |
+
+
 #### BodyMassQueryOptions
 
 | Prop            | Type                |
@@ -154,6 +168,27 @@ getWorkouts(options: WorkoutsQueryOptions) => Promise<any>
 | **`startDate`** | <code>string</code> |
 | **`endDate`**   | <code>string</code> |
 | **`limit`**     | <code>number</code> |
+
+
+#### WorkoutsQueryOutput
+
+| Prop       | Type                                                                                                                                                                                                                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **`data`** | <code>{ uuid: string; startDate: string; endDate: string; duration: number; device?: <a href="#healthkitdevice">HealthKitDevice</a>; source: string; sourceBundleId: string; workoutActivityType: string; workoutActivityTypeId: number; totalEnergyBurned?: number; totalDistance?: number; totalFlightsClimbed?: number; totalSwimmingStrokeCount?: number; }[]</code> |
+
+
+#### HealthKitDevice
+
+| Prop                      | Type                |
+| ------------------------- | ------------------- |
+| **`name`**                | <code>string</code> |
+| **`model`**               | <code>string</code> |
+| **`manufacturer`**        | <code>string</code> |
+| **`hardwareVersion`**     | <code>string</code> |
+| **`softwareVersion`**     | <code>string</code> |
+| **`firmwareVersion`**     | <code>string</code> |
+| **`localIdentifier`**     | <code>string</code> |
+| **`udiDeviceIdentifier`** | <code>string</code> |
 
 
 #### WorkoutsQueryOptions
