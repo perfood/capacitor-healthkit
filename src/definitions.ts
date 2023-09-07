@@ -45,7 +45,8 @@ export interface BodyMassQueryOptions {
 
 export interface StatisticsCollectionOutput {
   data: {
-    date: string;
+    startDate: string;
+    endDate: string;
     value: number;
   }[];
 }

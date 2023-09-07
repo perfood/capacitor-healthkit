@@ -136,11 +136,13 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             statsCollection.enumerateStatistics(from: startDate, to: endDate)
             { (statistics, stop) in
                 let quantity = statistics.sumQuantity()
-                let date = statistics.startDate
+                let startDate = statistics.startDate
+                let endDate = statistics.endDate
                 let value = quantity != nil ? quantity!.doubleValue(for: .count()) : 0
                     
                 output.append([
-                    "date": date,
+                    "startDate": startDate,
+                    "endDate": endDate,
                     "value": Int(value)
                 ])
             }
