@@ -30,3 +30,20 @@ func getDeviceInformation(device: HKDevice?) -> DeviceInformation? {
             
     return deviceInformation;
 }
+
+func convertToDeviceInformationDictionary(_ deviceInfo: DeviceInformation?) -> [String: Any]? {
+    guard let deviceInfo = deviceInfo else {
+        return nil
+    }
+
+    return [
+        "name": deviceInfo.name ?? NSNull(),
+        "model": deviceInfo.model ?? NSNull(),
+        "manufacturer": deviceInfo.manufacturer ?? NSNull(),
+        "hardwareVersion": deviceInfo.hardwareVersion ?? NSNull(),
+        "softwareVersion": deviceInfo.softwareVersion ?? NSNull(),
+        "firmwareVersion": deviceInfo.firmwareVersion ?? NSNull(),
+        "localIdentifier": deviceInfo.localIdentifier ?? NSNull(),
+        "udiDeviceIdentifier": deviceInfo.udiDeviceIdentifier ?? NSNull()
+    ]
+}
