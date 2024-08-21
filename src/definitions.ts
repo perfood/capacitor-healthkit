@@ -25,9 +25,10 @@ export interface CapacitorHealthkitPlugin {
    */
   isEditionAuthorized(queryOptions: EditionQuery): Promise<void>;
   /**
-   * Checks if there is writing permission for multiple sample types. This function has not been tested - and usually needs a parameter to be able to answer.
+   * Checks if there is writing permission for multiple sample types. This function has not been tested.
+   * @param queryOptions defines the sampletypes for which you need to check for writing permission.
    */
-  multipleIsEditionAuthorized(): Promise<void>;
+  multipleIsEditionAuthorized(queryOptions: MultipleEditionQuery): Promise<void>;
 }
 
 /**
@@ -127,6 +128,15 @@ export interface AuthorizationQueryOptions {
 export interface EditionQuery {
   sampleName: string;
 }
+
+
+/**
+ * This is used for checking writing permissions.
+ */
+export interface MultipleEditionQuery {
+  sampleNames: string[];
+}
+
 
 /**
  * These Sample names define the possible query options.
