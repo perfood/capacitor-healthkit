@@ -106,7 +106,7 @@ And you're all set ! :+1:
 * [`isAvailable()`](#isavailable)
 * [`multipleQueryHKitSampleType(...)`](#multiplequeryhkitsampletype)
 * [`isEditionAuthorized(...)`](#iseditionauthorized)
-* [`multipleIsEditionAuthorized()`](#multipleiseditionauthorized)
+* [`multipleIsEditionAuthorized(...)`](#multipleiseditionauthorized)
 * [Interfaces](#interfaces)
 
 </docgen-index>
@@ -189,13 +189,17 @@ Checks if there is writing permission for one specific sample type. This functio
 --------------------
 
 
-### multipleIsEditionAuthorized()
+### multipleIsEditionAuthorized(...)
 
 ```typescript
-multipleIsEditionAuthorized() => Promise<void>
+multipleIsEditionAuthorized(queryOptions: MultipleEditionQuery) => Promise<void>
 ```
 
 Checks if there is writing permission for multiple sample types. This function has not been tested - and usually needs a parameter to be able to answer.
+
+| Param              | Type                                                                  | Description                                                                |
+| ------------------ | --------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| **`queryOptions`** | <code><a href="#multipleeditionquery">MultipleEditionQuery</a></code> | defines the sampletypes for which you need to check for writing permission. |
 
 --------------------
 
@@ -249,6 +253,15 @@ This is used for checking writing permissions.
 | Prop             | Type                |
 | ---------------- | ------------------- |
 | **`sampleName`** | <code>string</code> |
+
+
+#### MultipleEditionQuery
+
+This is used for checking writing permissions.
+
+| Prop              | Type                   |
+| ----------------- | ---------------------- |
+| **`sampleNames`** | <code>string[]</code> |
 
 </docgen-api>
 
