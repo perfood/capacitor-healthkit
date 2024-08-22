@@ -19,6 +19,11 @@ This guide provides instructions for contributing to this Capacitor plugin.
     brew install swiftlint
     ```
 
+### Resources
+
+1. [HKQuantityTypeIdentifier](https://developer.apple.com/documentation/healthkit/hkquantitytypeidentifier)
+1. [HKUnit](https://developer.apple.com/documentation/healthkit/hkunit)
+
 ### Scripts
 
 #### `npm run build`

@@ -195,7 +195,7 @@ Checks if there is writing permission for one specific sample type. This functio
 multipleIsEditionAuthorized(queryOptions: MultipleEditionQuery) => Promise<void>
 ```
 
-Checks if there is writing permission for multiple sample types. This function has not been tested - and usually needs a parameter to be able to answer.
+Checks if there is writing permission for multiple sample types. This function has not been tested.
 
 | Param              | Type                                                                  | Description                                                                |
 | ------------------ | --------------------------------------------------------------------- | -------------------------------------------------------------------------- |
