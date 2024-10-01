@@ -59,7 +59,23 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         case "weight":
             return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!
         case "heartRate":
-             return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate)!
+            return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate)!
+        case "restingHeartRate":
+            return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.restingHeartRate)!
+        case "respiratoryRate":
+            return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.respiratoryRate)!
+        case "bodyFat":
+            return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyFatPercentage)!
+        case "oxygenSaturation":
+            return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.oxygenSaturation)!
+        case "basalBodyTemperature":
+            return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.basalBodyTemperature)!
+        case "bodyTemperature":
+            return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyTemperature)!
+        case "bloodPressureSystolic":
+            return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureSystolic)!
+        case "bloodPressureDiastolic":
+            return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureDiastolic)!
         default:
             return nil
         }
@@ -89,7 +105,23 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             case "weight":
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyMass)!)
             case "heartRate":
-                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate)!)
+                types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.heartRate)!)
+            case "restingHeartRate":
+                types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.restingHeartRate)!)
+            case "respiratoryRate":
+                types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.respiratoryRate)!)
+            case "bodyFat":
+                types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyFatPercentage)!)
+            case "oxygenSaturation":
+                types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.oxygenSaturation)!)
+            case "basalBodyTemperature":
+                types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.basalBodyTemperature)!)
+            case "bodyTemperature":
+                types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bodyTemperature)!)
+            case "bloodPressureSystolic":
+                types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureSystolic)!)
+            case "bloodPressureDiastolic":
+                types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureDiastolic)!)
             default:
                 print("no match in case: " + item)
             }
@@ -377,9 +409,21 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 if sampleName == "heartRate" {
                     unit = HKUnit(from: "count/min")
                     unitName = "BPM"
+                } else if sampleName == "restingHeartRate" {
+                    unit = HKUnit(from: "count/min")
+                    unitName = "BPM"
                 } else if sampleName == "weight" {
                     unit = HKUnit.gramUnit(with: .kilo)
                     unitName = "kilogram"
+                } else if sampleName == "respiratoryRate" {
+                    unit = HKUnit(from: "count/min")
+                    unitName = "BrPM"
+                } else if sampleName == "bodyFat" {
+                    unit = HKUnit.percent()
+                    unitName = "percent"
+                } else if sampleName == "oxygenSaturation" {
+                    unit = HKUnit.percent()
+                    unitName = "percent"
                 } else if sample.quantityType.is(compatibleWith: HKUnit.meter()) {
                     unit = HKUnit.meter()
                     unitName = "meter"
@@ -395,6 +439,18 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 } else if sample.quantityType.is(compatibleWith: HKUnit.moleUnit(withMolarMass: HKUnitMolarMassBloodGlucose).unitDivided(by: HKUnit.literUnit(with: .kilo))) {
                     unit = HKUnit.moleUnit(withMolarMass: HKUnitMolarMassBloodGlucose).unitDivided(by: HKUnit.literUnit(with: .kilo))
                     unitName = "mmol/L"
+                } else if sample.quantityType.is(compatibleWith: HKUnit.degreeCelsius()) {
+                    unit = HKUnit.degreeCelsius()
+                    unitName = "celsius"
+                } else if sample.quantityType.is(compatibleWith: HKUnit.degreeFahrenheit()) {
+                    unit = HKUnit.degreeFahrenheit()
+                    unitName = "fahrenheit"
+                } else if sample.quantityType.is(compatibleWith: HKUnit.kelvin()) {
+                    unit = HKUnit.kelvin()
+                    unitName = "kelvin"
+                } else if sample.quantityType.is(compatibleWith: HKUnit.millimeterOfMercury()) {
+                    unit = HKUnit.millimeterOfMercury()
+                    unitName = "mmHg"
                 } else {
                     print("Error: unknown unit type")
                 }

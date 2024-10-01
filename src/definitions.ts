@@ -154,4 +154,12 @@ export enum SampleNames {
   WORKOUT_TYPE = 'workoutType',
   WEIGHT = 'weight',
   HEART_RATE = 'heartRate',
+  RESTING_HEART_RATE = 'restingHeartRate',
+  RESPIRATORY_RATE = 'respiratoryRate',
+  BODY_FAT = 'bodyFat',
+  OXYGEN_SATURATION = 'oxygenSaturation',
+  BASAL_BODY_TEMPERATURE = 'basalBodyTemperature',
+  BODY_TEMPERATURE = 'bodyTemperature',
+  BLOOD_PRESSURE_SYSTOLIC = 'bloodPressureSystolic',
+  BLOOD_PRESSURE_DIASTOLIC = 'bloodPressureDiastolic'
 }
