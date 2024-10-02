@@ -125,7 +125,7 @@ getWorkouts(options: WorkoutsQueryOptions) => Promise<WorkoutsQueryOutput>
 
 | Prop             | Type                |
 | ---------------- | ------------------- |
-| **`sampleType`** | <code>string</code> |
+| **`sampleName`** | <code>string</code> |
 
 
 #### StatisticsCollectionOutput
@@ -210,6 +210,5 @@ getWorkouts(options: WorkoutsQueryOptions) => Promise<WorkoutsQueryOutput>
 
 #### QuantityType
 
-<code>'stepCount'</code>
-
+<code>'stepCount' \| 'activeEnergyBurned' \| 'appleExerciseTime' \| 'basalEnergyBurned' \| 'bloodGlucose' \| 'distanceCycling' \| 'distanceWalkingRunning' \| 'flightsClimbed' \| 'heartRate' \| 'weight'</code>
 </docgen-api>

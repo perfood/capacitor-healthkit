@@ -138,7 +138,39 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 let quantity = statistics.sumQuantity()
                 let startDate = statistics.startDate
                 let endDate = statistics.endDate
-                let value = quantity != nil ? quantity!.doubleValue(for: .count()) : 0
+
+                var unit = HKUnit.count();
+
+                switch sampleName {
+                case "activeEnergyBurned":
+                    unit = HKUnit.kilocalorie();
+
+                case "basalEnergyBurned":
+                    unit = HKUnit.kilocalorie();
+
+                case "distanceCycling":
+                    unit = HKUnit.meter();
+
+                case "distanceWalkingRunning":
+                    unit = HKUnit.meter();
+
+                case "appleExerciseTime":
+                    unit = HKUnit.minute();
+
+                case "weight":
+                    unit = HKUnit.gram();
+
+                case "flightsClimbed":
+                    unit = HKUnit.count();
+
+                case "heartRate":
+                    unit = HKUnit.count();
+
+                default:
+                     return call.reject("A HelathKit error occurred")
+                }
+
+                let value = quantity != nil ? quantity!.doubleValue(for: unit) : 0
                     
                 output.append([
                     "startDate": startDate,

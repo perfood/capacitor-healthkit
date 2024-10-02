@@ -5,7 +5,7 @@ export interface CapacitorHealthkitPlugin {
     options: GetAuthorizationStatusOptions,
   ): Promise<{ status: AuthorizationStatus }>;
   getStatisticsCollection(options: StatisticsCollectionOptions): Promise<StatisticsCollectionOutput>;
-  getBodyMassEntries(options: BodyMassQueryOptions): Promise<BodyMassQueryOutput>; 
+  getBodyMassEntries(options: BodyMassQueryOptions): Promise<BodyMassQueryOutput>;
   getWorkouts(options: WorkoutsQueryOptions): Promise<WorkoutsQueryOutput>;
 }
 
@@ -16,7 +16,7 @@ export interface RequestAuthorizationOptions {
 }
 
 export interface GetAuthorizationStatusOptions {
-  sampleType: string;
+  sampleName: string;
 }
 
 export type AuthorizationStatus =
@@ -81,13 +81,13 @@ export interface WorkoutsQueryOutput {
 }
 
 export interface HealthKitDevice {
-  name?: string ;
-  model?: string ;
-  manufacturer?: string ;
-  hardwareVersion?: string ;
-  softwareVersion?: string ;
-  firmwareVersion?: string; 
-  localIdentifier?: string ; 
+  name?: string;
+  model?: string;
+  manufacturer?: string;
+  hardwareVersion?: string;
+  softwareVersion?: string;
+  firmwareVersion?: string;
+  localIdentifier?: string;
   udiDeviceIdentifier?: string;
 }
 
@@ -96,7 +96,7 @@ export interface StatisticsCollectionQueryInterval {
   value: number;
 }
 
-export type QuantityType = 'stepCount'; // TODO: implement more quantity types
+export type QuantityType = 'stepCount' | 'activeEnergyBurned' | 'appleExerciseTime' | 'basalEnergyBurned' | 'bloodGlucose' | 'distanceCycling' | 'distanceWalkingRunning' | 'flightsClimbed' | 'heartRate' | 'weight';
 
 // See https://developer.apple.com/documentation/healthkit/hkworkoutactivitytype
 export type ActivityType =
