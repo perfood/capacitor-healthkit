@@ -166,6 +166,9 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 case "heartRate":
                     unit = HKUnit.count();
 
+                case "stepCount":
+                    unit = HKUnit.count();
+
                 default:
                      return call.reject("A HelathKit error occurred")
                 }
