@@ -1,5 +1,7 @@
 # Capacitor HealthKit Plugin
 
+We are slowly working on the next version of this plugin. PRs to the main branch are no longer being accepted, please work with the v2 branch from now on. v2 is already being published as alpha on npm.
+
 :heart: Capacitor plugin to retrieve data from HealthKit :heart:
 
 Disclaimer : _for now only some of the HK data base, in the future the retrieve base will be bigger !_
