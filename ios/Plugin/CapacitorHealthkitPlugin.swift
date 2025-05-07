@@ -529,6 +529,11 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         }
     }
     @objc func queryHKitSampleType(_ call: CAPPluginCall) {
+         // Create ISO8601 date formatter for parsing date strings
+        let formatter = ISO8601DateFormatter()
+        // Set the format options to include fractional seconds
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        
         guard let _sampleName = call.options["sampleName"] as? String else {
             return call.reject("Must provide sampleName")
         }
@@ -538,9 +543,11 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         guard let endDateString = call.options["endDate"] as? String else {
             return call.reject("Must provide endDate")
         }
+        
+        // Parse the start date string using the formatter
+        let _startDate = formatter.date(from: startDateString)!
+        let _endDate = formatter.date(from: endDateString)!
 
-        let _startDate = getDateFromString(inputDate: startDateString)
-        let _endDate = getDateFromString(inputDate: endDateString)
         guard let _limit = call.options["limit"] as? Int else {
             return call.reject("Must provide limit")
         }
