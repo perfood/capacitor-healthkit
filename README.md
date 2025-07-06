@@ -109,6 +109,7 @@ And you're all set ! :+1:
 * [`multipleQueryHKitSampleType(...)`](#multiplequeryhkitsampletype)
 * [`isEditionAuthorized(...)`](#iseditionauthorized)
 * [`multipleIsEditionAuthorized(...)`](#multipleiseditionauthorized)
+* [`fetchDetailedWorkouts(...)`](#fetchdetailedworkouts)
 * [Interfaces](#interfaces)
 
 </docgen-index>
@@ -199,9 +200,26 @@ multipleIsEditionAuthorized(queryOptions: MultipleEditionQuery) => Promise<void>
 
 Checks if there is writing permission for multiple sample types. This function has not been tested.
 
-| Param              | Type                                                                  | Description                                                                |
-| ------------------ | --------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Param              | Type                                                                  | Description                                                                 |
+| ------------------ | --------------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | **`queryOptions`** | <code><a href="#multipleeditionquery">MultipleEditionQuery</a></code> | defines the sampletypes for which you need to check for writing permission. |
+
+--------------------
+
+
+### fetchDetailedWorkouts(...)
+
+```typescript
+fetchDetailedWorkouts(options: FetchDetailedWorkoutsOptions) => Promise<WorkoutResponse>
+```
+
+This fetches detailed workout information *
+
+| Param         | Type                                                                                  |
+| ------------- | ------------------------------------------------------------------------------------- |
+| **`options`** | <code><a href="#fetchdetailedworkoutsoptions">FetchDetailedWorkoutsOptions</a></code> |
+
+**Returns:** <code>Promise&lt;<a href="#workoutresponse">WorkoutResponse</a>&gt;</code>
 
 --------------------
 
@@ -261,9 +279,72 @@ This is used for checking writing permissions.
 
 This is used for checking writing permissions.
 
-| Prop              | Type                   |
-| ----------------- | ---------------------- |
+| Prop              | Type                  |
+| ----------------- | --------------------- |
 | **`sampleNames`** | <code>string[]</code> |
+
+
+#### WorkoutResponse
+
+| Prop           | Type                               |
+| -------------- | ---------------------------------- |
+| **`workouts`** | <code>DetailedWorkoutData[]</code> |
+
+
+#### DetailedWorkoutData
+
+| Prop               | Type                                                      |
+| ------------------ | --------------------------------------------------------- |
+| **`uuid`**         | <code>string</code>                                       |
+| **`startDate`**    | <code>string</code>                                       |
+| **`endDate`**      | <code>string</code>                                       |
+| **`activityType`** | <code>number</code>                                       |
+| **`duration`**     | <code>number</code>                                       |
+| **`source`**       | <code>string</code>                                       |
+| **`metrics`**      | <code><a href="#workoutmetrics">WorkoutMetrics</a></code> |
+
+
+#### WorkoutMetrics
+
+| Prop               | Type                                          |
+| ------------------ | --------------------------------------------- |
+| **`heartRate`**    | <code>{ value: number; unit: 'bpm'; }</code>  |
+| **`runningSpeed`** | <code>{ value: number; unit: 'm/s'; }</code>  |
+| **`cyclingPower`** | <code>{ value: number; unit: 'watt'; }</code> |
+| **`route`**        | <code>RouteLocation[]</code>                  |
+| **`segments`**     | <code>WorkoutSegment[]</code>                 |
+
+
+#### RouteLocation
+
+| Prop            | Type                |
+| --------------- | ------------------- |
+| **`latitude`**  | <code>number</code> |
+| **`longitude`** | <code>number</code> |
+| **`altitude`**  | <code>number</code> |
+| **`timestamp`** | <code>string</code> |
+
+
+#### WorkoutSegment
+
+AG: Added for detailed workout statistics
+
+| Prop            | Type                                                                                                                                           |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`type`**      | <code>'pause' \| 'resume' \| 'lap' \| 'marker' \| 'motionPaused' \| 'motionResumed' \| 'segment' \| 'pauseOrResumeRequest' \| 'unknown'</code> |
+| **`startDate`** | <code>string</code>                                                                                                                            |
+| **`endDate`**   | <code>string</code>                                                                                                                            |
+| **`duration`**  | <code>number</code>                                                                                                                            |
+
+
+#### FetchDetailedWorkoutsOptions
+
+| Prop               | Type                  |
+| ------------------ | --------------------- |
+| **`startDate`**    | <code>string</code>   |
+| **`endDate`**      | <code>string</code>   |
+| **`workoutTypes`** | <code>string[]</code> |
+| **`limit`**        | <code>number</code>   |
 
 </docgen-api>
 

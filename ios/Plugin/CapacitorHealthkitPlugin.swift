@@ -4,6 +4,151 @@ import HealthKit
 
 var healthStore = HKHealthStore()
 
+// MARK: -- @AG: Added for structuring workout types and metrics
+struct WorkoutMetric {
+    let identifier: HKQuantityTypeIdentifier
+    let unit: HKUnit
+    let options: HKStatisticsOptions
+}
+
+func safeMetric(
+    identifier: String,
+    options: HKStatisticsOptions
+) -> WorkoutMetric? {
+    switch identifier {
+    case "HKQuantityTypeIdentifierRunningSpeed":
+        if #available(iOS 16.0, *) {
+            return WorkoutMetric(
+                identifier: .runningSpeed,
+                unit: HKUnit.meter().unitDivided(by: .second()),
+                options: options
+            )
+        }
+    case "HKQuantityTypeIdentifierRunningStrideLength":
+        if #available(iOS 16.0, *) {
+            return WorkoutMetric(
+                identifier: .runningStrideLength,
+                unit: .meter(),
+                options: options
+            )
+        }
+    case "HKQuantityTypeIdentifierWalkingSpeed":
+        if #available(iOS 16.0, *) {
+            return WorkoutMetric(
+                identifier: .walkingSpeed,
+                unit: HKUnit.meter().unitDivided(by: .second()),
+                options: options
+            )
+        }
+    case "HKQuantityTypeIdentifierWalkingStepLength":
+        if #available(iOS 16.0, *) {
+            return WorkoutMetric(
+                identifier: .walkingStepLength,
+                unit: .meter(),
+                options: options
+            )
+        }
+    case "HKQuantityTypeIdentifierCyclingSpeed":
+        if #available(iOS 17.0, *) {
+            return WorkoutMetric(
+                identifier: .cyclingSpeed,
+                unit: HKUnit.meter().unitDivided(by: .second()),
+                options: options
+            )
+        }
+    case "HKQuantityTypeIdentifierCyclingPower":
+        if #available(iOS 17.0, *) {
+            return WorkoutMetric(
+                identifier: .cyclingPower,
+                unit: HKUnit.watt(),
+                options: options
+            )
+        }
+    case "HKQuantityTypeIdentifierHeartRate":
+        return WorkoutMetric(
+            identifier: .heartRate,
+            unit: HKUnit.count().unitDivided(by: .minute()),
+            options: options
+        )
+    default:
+        break
+    }
+    return nil
+}
+
+let workoutMetricConfig: [HKWorkoutActivityType: [(String, HKStatisticsOptions)]] = [
+    .running: [
+        ("HKQuantityTypeIdentifierHeartRate", .discreteAverage),
+        ("HKQuantityTypeIdentifierRunningSpeed", .discreteAverage),
+        ("HKQuantityTypeIdentifierRunningStrideLength", .discreteAverage)
+    ],
+    .walking: [
+        ("HKQuantityTypeIdentifierWalkingSpeed", .discreteAverage),
+        ("HKQuantityTypeIdentifierWalkingStepLength", .discreteAverage)
+    ],
+    .cycling: [
+        ("HKQuantityTypeIdentifierCyclingSpeed", .discreteAverage),
+        ("HKQuantityTypeIdentifierCyclingPower", .discreteAverage)
+    ]
+]
+
+let hkMetricKeyMapping: [String: String] = [
+    "HKQuantityTypeIdentifierHeartRate": "heartRate",
+    "HKQuantityTypeIdentifierRunningSpeed": "speed",
+    "HKQuantityTypeIdentifierRunningStrideLength": "strideLength",
+    "HKQuantityTypeIdentifierWalkingSpeed": "speed",
+    "HKQuantityTypeIdentifierWalkingStepLength": "stepLength",
+    "HKQuantityTypeIdentifierCyclingSpeed": "speed",
+    "HKQuantityTypeIdentifierCyclingPower": "power"
+]
+
+
+//var workoutMetricsMap: [HKWorkoutActivityType: [WorkoutMetric]] = [:]
+var workoutMetricsMap: [HKWorkoutActivityType: [WorkoutMetric]] {
+    var result: [HKWorkoutActivityType: [WorkoutMetric]] = [:]
+    for (activityType, metrics) in workoutMetricConfig {
+        var metricObjs: [WorkoutMetric] = []
+        for (identifier, options) in metrics {
+            if let metric = safeMetric(identifier: identifier, options: options) {
+                metricObjs.append(metric)
+            } else {
+                print("⚠️ Could not resolve metric for identifier: \(identifier)")
+            }
+        }
+        result[activityType] = metricObjs
+    }
+    return result
+}
+
+
+struct Segment {
+    let startDate: Date
+    let endDate: Date
+    let duration: TimeInterval
+    let original: [String: Any] // preserve original dictionary
+
+    init?(from dict: [String: Any], formatter: ISO8601DateFormatter) {
+        guard let startStr = dict["startDate"] as? String,
+              let endStr = dict["endDate"] as? String,
+              let start = formatter.date(from: startStr),
+              let end = formatter.date(from: endStr),
+              start < end else {
+            return nil
+        }
+
+        self.startDate = start
+        self.endDate = end
+        self.duration = end.timeIntervalSince(start)
+        self.original = dict
+    }
+
+    func overlaps(with other: Segment) -> Bool {
+        return self.startDate < other.endDate && self.endDate > other.startDate
+    }
+}
+
+// End Struct addition
+
 /**
  * Please read the Capacitor iOS Plugin Development Guide
  * here: https://capacitorjs.com/docs/plugins/ios
@@ -17,7 +162,9 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         case quantityRequestFailed
         case sampleTypeFailed
         case deniedDataAccessFailed
-
+        // @AG: Add to existing enum HKSampleError
+        case workoutDetailFetchFailed
+        
         var outputMessage: String {
             switch self {
             case .sleepRequestFailed:
@@ -30,6 +177,8 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 return "sampleTypeFailed"
             case .deniedDataAccessFailed:
                 return "deniedDataAccessFailed"
+            case .workoutDetailFetchFailed:
+                return "workoutDetailFetchFailed"
             }
         }
     }
@@ -76,9 +225,43 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureSystolic)!
         case "bloodPressureDiastolic":
             return HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodPressureDiastolic)!
+        // Add these new cases for extended metrics with availability checks:
+        case "runningSpeed":
+            if #available(iOS 16.0, *) {
+                return HKQuantityType(.runningSpeed)
+            }
+        case "runningVerticalOscillation":
+            if #available(iOS 16.0, *) {
+                return HKQuantityType(.runningVerticalOscillation)
+            }
+        case "runningGroundContactTime":
+            if #available(iOS 16.0, *) {
+                return HKQuantityType(.runningGroundContactTime)
+            }
+        case "runningStrideLength":
+            if #available(iOS 16.0, *) {
+                return HKQuantityType(.runningStrideLength)
+            }
+        case "walkingSpeed":
+            if #available(iOS 15.0, *) {
+                return HKQuantityType(.walkingSpeed)
+            }
+        case "walkingStepLength":
+            if #available(iOS 15.0, *) {
+                return HKQuantityType(.walkingStepLength)
+            }
+        case "walkingAsymmetryPercentage":
+            if #available(iOS 15.0, *) {
+                return HKQuantityType(.walkingAsymmetryPercentage)
+            }
+        case "heartRateRecoveryOneMinute":
+            if #available(iOS 16.0, *) {
+                return HKQuantityType(.heartRateRecoveryOneMinute)
+            }
         default:
             return nil
         }
+        return nil
     }
 
     func getTypes(items: [String]) -> Set<HKSampleType> {
@@ -94,12 +277,40 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
             case "activity":
                 types.insert(HKObjectType.categoryType(forIdentifier: HKCategoryTypeIdentifier.sleepAnalysis)!)
                 types.insert(HKWorkoutType.workoutType())
+                types.insert(HKSeriesType.workoutRoute())
+                
             case "calories":
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.activeEnergyBurned)!)
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.basalEnergyBurned)!)
             case "distance":
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.distanceWalkingRunning)!)
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.distanceCycling)!)
+            // Add these new cases:
+            case "runningMetrics":
+                if #available(iOS 16.0, *) {
+                    types.insert(HKQuantityType(.runningSpeed))
+                    types.insert(HKQuantityType(.runningVerticalOscillation))
+                    types.insert(HKQuantityType(.runningGroundContactTime))
+                    types.insert(HKQuantityType(.runningStrideLength))
+                }
+                
+            case "walkingMetrics":
+                if #available(iOS 15.0, *) {
+                    types.insert(HKQuantityType(.walkingSpeed))
+                    types.insert(HKQuantityType(.walkingStepLength))
+                    types.insert(HKQuantityType(.walkingAsymmetryPercentage))
+                }
+            
+            case "swimmingMetrics":
+                if #available(iOS 15.0, *) {
+                    types.insert(HKQuantityType(.swimmingStrokeCount))
+                }
+            case "cyclingMetrics":
+                if #available(iOS 17.0, *) {
+                    types.insert(HKQuantityType(.cyclingCadence))
+                    types.insert(HKQuantityType(.cyclingFunctionalThresholdPower))
+                    types.insert(HKQuantityType(.cyclingPower))
+                }
             case "bloodGlucose":
                 types.insert(HKQuantityType.quantityType(forIdentifier: HKQuantityTypeIdentifier.bloodGlucose)!)
             case "weight":
@@ -321,6 +532,12 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                 let sleepInterval = sleepED.timeIntervalSince(sleepSD as Date)
                 let sleepHoursBetweenDates = sleepInterval / 3600
                 let sleepState = (sample.value == HKCategoryValueSleepAnalysis.inBed.rawValue) ? "InBed" : "Asleep"
+                let rawSourceName = sample.sourceRevision.source.name
+                let normalizedSourceName = rawSourceName
+                    .replacingOccurrences(of: "\u{00A0}", with: " ")  // non-breaking space
+                    .replacingOccurrences(of: "\u{200B}", with: "")   // zero-width space
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                
                 let constructedSample: [String: Any] = [
                     "uuid": sample.uuid.uuidString,
                     "timeZone": getTimeZoneString(sample: sample) as String,
@@ -328,7 +545,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                     "endDate": ISO8601DateFormatter().string(from: sample.endDate),
                     "duration": sleepHoursBetweenDates,
                     "sleepState": sleepState,
-                    "source": sample.sourceRevision.source.name,
+                    "source": normalizedSourceName,
                     "sourceBundleId": sample.sourceRevision.source.bundleIdentifier,
                     "device": getDeviceInformation(device: sample.device),
                 ]
@@ -455,7 +672,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
                     print("Error: unknown unit type")
                 }
 
-                var value: Double 
+                var value: Double
                 let quantitySD: NSDate
                 let quantityED: NSDate
                 quantitySD = sample.startDate as NSDate
@@ -501,7 +718,7 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         formatter.formatOptions =  [.withInternetDateTime, .withFractionalSeconds]
         return formatter.date(from: inputDate)!
     }
-
+    
     
     @objc func requestAuthorization(_ call: CAPPluginCall) {
         if !HKHealthStore.isHealthDataAvailable() {
@@ -678,3 +895,501 @@ public class CapacitorHealthkitPlugin: CAPPlugin {
         healthStore.execute(query)
     }
 }
+
+// MARK: - Workout Detail Extension
+extension CapacitorHealthkitPlugin {
+    
+    @objc func fetchDetailedWorkouts(_ call: CAPPluginCall) {
+        guard let startDateStr = call.getString("startDate"),
+              let endDateStr = call.getString("endDate") else {
+            call.reject("Missing required date parameters")
+            return
+        }
+        
+        let startDate = getDateFromString(inputDate: startDateStr)
+        let endDate = getDateFromString(inputDate: endDateStr)
+        let limit = call.getInt("limit") ?? HKObjectQueryNoLimit
+        
+        let predicate = HKQuery.predicateForSamples(
+            withStart: startDate,
+            end: endDate,
+            options: .strictStartDate
+        )
+        
+        let query = HKSampleQuery(
+            sampleType: HKWorkoutType.workoutType(),
+            predicate: predicate,
+            limit: limit,
+            sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)]
+        ) { [weak self] _, samples, error in
+            guard let self = self else { return }
+            
+            if let error = error {
+                call.reject("Query failed: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let workouts = samples as? [HKWorkout] else {
+                call.resolve(["workouts": []])
+                return
+            }
+            
+            self.processDetailedWorkouts(workouts, call: call)
+        }
+        
+        healthStore.execute(query)
+    }
+    
+    
+    
+    private func processDetailedWorkouts(_ workouts: [HKWorkout], call: CAPPluginCall) {
+        var results: [[String: Any]] = []
+        let group = DispatchGroup()
+        let lock = NSLock()
+        
+        let allowedTypes: Set<HKWorkoutActivityType> = [.running, .walking, .cycling]
+
+        for workout in workouts where allowedTypes.contains(workout.workoutActivityType) {
+            group.enter()
+
+            var workoutData = generateOutput(sampleName: "workoutType", results: [workout])?.first ?? [:]
+
+            // Subgroup for the three async fetches
+            let detailGroup = DispatchGroup()
+
+            // Metrics
+            detailGroup.enter()
+            self.fetchAdvancedMetrics(for: workout) { metrics in
+                if !metrics.isEmpty {
+                    workoutData["metrics"] = metrics.mapValues { value in
+                        if let dict = value as? [String: Any], let val = dict["value"] {
+                            return val
+                        }
+                        return value
+                    }
+                }
+                
+                detailGroup.leave()
+            }
+
+            // Route
+            detailGroup.enter()
+            self.fetchWorkoutRoute(workout: workout) { route in
+                if let route = route {
+                    workoutData["route"] = route
+                }
+                detailGroup.leave()
+            }
+
+            // Segments
+            detailGroup.enter()
+            self.fetchWorkoutSegmentsWithMetrics(workout: workout) { segments in
+                lock.lock()
+                    if let segments = segments {
+                        workoutData["segments"] = segments
+                    }
+                    lock.unlock()
+                detailGroup.leave()
+            }
+
+            // When all fetches for this workout are done
+            detailGroup.notify(queue: .main) {
+                lock.lock()
+                results.append(workoutData)
+                lock.unlock()
+                group.leave()
+            }
+        }
+
+        // When all workouts are processed
+        group.notify(queue: .main) {
+            call.resolve(["workouts": results])
+        }
+    }
+
+    
+    private func unitString(for unit: HKUnit) -> String {
+        if unit == HKUnit.count().unitDivided(by: .minute()) {
+            return "bpm"
+        } else if unit == HKUnit.meter().unitDivided(by: .second()) {
+            return "m/s"
+        } else if unit == HKUnit.meter() {
+            return "m"
+        } else {
+            if #available(iOS 17.0, *) {
+                if unit == HKUnit.watt() {
+                    return "watt"
+                }
+            }
+        }
+        return unit.description
+    }
+
+
+    
+    private func fetchAdvancedMetrics(for workout: HKWorkout, completion: @escaping ([String: Any]) -> Void) {
+        var metrics: [String: Any] = [:]
+        let group = DispatchGroup()
+
+        let metricList = workoutMetricsMap[workout.workoutActivityType] ?? []
+
+        //print("📦 Metrics to query for \(workout.workoutActivityType.rawValue): \(metricList.map { $0.identifier.rawValue })")
+
+        for metric in metricList {
+            guard let quantityType = HKQuantityType.quantityType(forIdentifier: metric.identifier) else {
+                print("❌ Invalid identifier: \(metric.identifier.rawValue)")
+                continue
+            }
+            
+
+
+            let predicate = HKQuery.predicateForSamples(
+                withStart: workout.startDate,
+                end: workout.endDate,
+                options: .strictStartDate
+            )
+
+            //print("🔍 Querying \(metric.identifier.rawValue) for workout \(workout.uuid) from \(workout.startDate) to \(workout.endDate)")
+            
+            group.enter()
+            let query = HKStatisticsQuery(quantityType: quantityType, quantitySamplePredicate: predicate, options: metric.options) { (query, stats, queryError) in
+
+            /*let query = HKStatisticsQuery(quantityType: quantityType, quantitySamplePredicate: predicate, options: metric.options) { _, stats, _ in*/
+                defer { group.leave() }
+                
+                if let queryError = queryError {
+                    print("⚠️ Error for \(metric.identifier.rawValue): \(queryError.localizedDescription)")
+                    return
+                }
+
+                guard let quantity = stats?.averageQuantity() else {
+                    print("⚠️ No averageQuantity for \(metric.identifier.rawValue)")
+                    return
+                }
+
+                let value = quantity.doubleValue(for: metric.unit)
+                //print("✅ Fetched \(metric.identifier.rawValue): \(value) \(self.unitString(for: metric.unit))")
+                
+                //metrics[metric.identifier.rawValue] = value
+                let key = hkMetricKeyMapping[metric.identifier.rawValue] ?? metric.identifier.rawValue
+                metrics[key] = value
+
+                /*metrics[metric.identifier.rawValue] = [
+                    "value": value,
+                    "unit": self.unitString(for: metric.unit)
+                ]*/
+                //print("📊 \(metric.identifier.rawValue): \(value) \(self.unitString(for: metric.unit))")
+
+            }
+
+            healthStore.execute(query)
+        }
+
+        group.notify(queue: .main) {
+            completion(metrics)
+        }
+    }
+    
+    // Utility Method to normalize Apple Specific keys
+    private func normalizeMetrics(_ metrics: [String: Any]) -> [String: Any] {
+        var normalized: [String: Any] = [:]
+
+        for (key, value) in metrics {
+            let newKey = hkMetricKeyMapping[key] ?? key // fallback to original if no mapping
+            normalized[newKey] = value
+        }
+
+        return normalized
+    }
+
+    
+    // MARK: - New Route & Segment Methods
+        @available(iOS 11.0, *)
+        private func fetchWorkoutRoute(workout: HKWorkout, completion: @escaping ([[String: Any]]?) -> Void) {
+            let routePredicate = HKQuery.predicateForObjects(from: workout)
+            let routeQuery = HKAnchoredObjectQuery(
+                type: HKSeriesType.workoutRoute(),
+                predicate: routePredicate,
+                anchor: nil,
+                limit: HKObjectQueryNoLimit
+            ) { [weak self] (_, samples, _, _, _) in
+                guard let self = self, let routes = samples as? [HKWorkoutRoute] else {
+                    completion(nil)
+                    return
+                }
+                self.processRoutes(routes, completion: completion)
+            }
+            healthStore.execute(routeQuery)
+        }
+
+        @available(iOS 11.0, *)
+        private func processRoutes(_ routes: [HKWorkoutRoute], completion: @escaping ([[String: Any]]?) -> Void) {
+            var allLocations: [[String: Any]] = []
+            let group = DispatchGroup()
+            
+            for route in routes {
+                group.enter()
+                let query = HKWorkoutRouteQuery(route: route) { (_, locations, done, _) in
+                    guard let locations = locations else {
+                        if done { group.leave() }
+                        return
+                    }
+                    
+                    let routeLocations = locations.map { location in
+                        return [
+                            "latitude": location.coordinate.latitude,
+                            "longitude": location.coordinate.longitude,
+                            "altitude": location.altitude,
+                            "timestamp": ISO8601DateFormatter().string(from: location.timestamp)
+                        ]
+                    }
+                    
+                    allLocations.append(contentsOf: routeLocations)
+                    
+                    if done {
+                        group.leave()
+                    }
+                }
+                healthStore.execute(query)
+            }
+            
+            group.notify(queue: .main) {
+                completion(allLocations.isEmpty ? nil : allLocations)
+            }
+        }
+
+    
+    // MARK: - Private Method fetchWorkoutSegments
+    
+    @available(iOS 10.0, *)
+    private func fetchWorkoutSegmentsWithMetrics(workout: HKWorkout, completion: @escaping ([[String: Any]]?) -> Void) {
+       
+        //print("🚦 Started fetching segments for workout: \(workout.uuid)")
+
+        guard let events = workout.workoutEvents, !events.isEmpty else {
+            completion(nil)
+            //print("Exiting fetchWorkoutSegmentsWithMetrics: No events found")
+            return
+        }
+
+        let segmentEvents = events.filter { $0.type == .segment }
+        if segmentEvents.isEmpty {
+            DispatchQueue.main.async {
+                completion(nil)
+            }
+            //print("Exiting fetchWorkoutSegmentsWithMetrics: No segment events found")
+            return
+        }
+
+        
+        let healthStore = HKHealthStore()
+        let distanceUnit = HKUnit.meter()
+        let speedUnit = HKUnit.meter().unitDivided(by: .second())
+        let distanceType = HKQuantityTypeIdentifier.distanceWalkingRunning
+        var speedType: HKQuantityTypeIdentifier? = nil
+
+        if #available(iOS 17.0, *) {
+            if workout.workoutActivityType == .cycling {
+                speedType = .cyclingSpeed
+            } else if workout.workoutActivityType == .running {
+                speedType = .runningSpeed
+            } else if workout.workoutActivityType == .walking {
+                speedType = .walkingSpeed
+            }
+        } else if #available(iOS 16.0, *) {
+            if workout.workoutActivityType == .running {
+                speedType = .runningSpeed
+            } else if workout.workoutActivityType == .walking {
+                speedType = .walkingSpeed
+            }
+        }
+
+        let group = DispatchGroup()
+        let lock = NSLock()
+        var rawSegmentsWithMetrics: [[String: Any]] = []
+        
+        //print("✅ Found \(events.count) events")
+        for event in segmentEvents {
+            let startDate = event.dateInterval.start
+            let endDate = event.dateInterval.end
+            let duration = event.dateInterval.duration
+
+            let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: [])
+
+            group.enter()
+
+            // Distance query
+            let distanceQuery = HKStatisticsQuery(
+                quantityType: HKQuantityType.quantityType(forIdentifier: distanceType)!,
+                quantitySamplePredicate: predicate,
+                options: .cumulativeSum
+            ) { _, distResult, _ in
+                let distance = distResult?.sumQuantity()?.doubleValue(for: distanceUnit) ?? 0
+
+                // Default fallback pace if speed query fails or not available
+                var fallbackSpeed: Double? = duration > 0 ? distance / duration : nil
+
+                // Nested speed query
+                if #available(iOS 16.0, *), let speedType = speedType,
+                   let speedTypeObj = HKQuantityType.quantityType(forIdentifier: speedType) {
+
+                    let speedQuery = HKStatisticsQuery(
+                        quantityType: speedTypeObj,
+                        quantitySamplePredicate: predicate,
+                        options: .discreteAverage
+                    ) { _, speedResult, _ in
+                        let speed = speedResult?.averageQuantity()?.doubleValue(for: speedUnit)
+
+                        let segmentDict = self.buildSegmentDict(
+                            event: event,
+                            duration: duration,
+                            distance: distance,
+                            speed: speed ?? fallbackSpeed
+                        )
+
+                        lock.lock()
+                        rawSegmentsWithMetrics.append(segmentDict)
+                        lock.unlock()
+                        group.leave()
+                    }
+
+                    healthStore.execute(speedQuery)
+
+                } else {
+                    // iOS < 16 or speedType not available
+                    let segmentDict = self.buildSegmentDict(
+                        event: event,
+                        duration: duration,
+                        distance: distance,
+                        speed: fallbackSpeed
+                    )
+
+                    lock.lock()
+                    rawSegmentsWithMetrics.append(segmentDict)
+                    lock.unlock()
+                    group.leave()
+                }
+            }
+
+            healthStore.execute(distanceQuery)
+        }
+
+        // filter segments for
+        let finalSegments = self.filterOverlappingSegments(segments: rawSegmentsWithMetrics)
+        group.notify(queue: .main) {
+            completion(rawSegmentsWithMetrics.isEmpty ? nil : rawSegmentsWithMetrics)
+        }
+    }
+
+    private func filterOverlappingSegments(segments: [[String: Any]]) -> [[String: Any]] {
+        let formatter = ISO8601DateFormatter()
+
+        // Convert to strongly-typed segments
+        let parsedSegments: [Segment] = segments.compactMap { Segment(from: $0, formatter: formatter) }
+
+        // Sort by startDate ascending
+        let sorted = parsedSegments.sorted { $0.startDate < $1.startDate }
+
+        var filtered: [Segment] = []
+
+        for current in sorted {
+            // Find overlapping segments in already accepted list
+            var overlapping: [(index: Int, segment: Segment)] = []
+
+            for (i, existing) in filtered.enumerated() {
+                if current.overlaps(with: existing) {
+                    overlapping.append((i, existing))
+                }
+            }
+
+            if overlapping.isEmpty {
+                filtered.append(current)
+                continue
+            }
+
+            // Compare durations
+            let allDurations = overlapping.map { $0.segment.duration } + [current.duration]
+            guard let minDuration = allDurations.min() else { continue }
+
+            // Remove strictly longer overlapping segments
+            for (index, segment) in overlapping.sorted(by: { $0.index > $1.index }) {
+                if segment.duration > minDuration {
+                    filtered.remove(at: index)
+                }
+            }
+
+            // Add current if it matches or is shorter than all overlapping
+            if current.duration <= minDuration {
+                filtered.append(current)
+            }
+        }
+
+        return filtered.map { $0.original }
+    }
+
+
+
+    private func workoutSpeedAndDistanceTypes(for activityType: HKWorkoutActivityType) -> (HKQuantityTypeIdentifier, HKQuantityTypeIdentifier?) {
+        switch activityType {
+        case .running:
+            if #available(iOS 16.0, *) {
+                return (.distanceWalkingRunning, .runningSpeed)
+            } else {
+                return (.distanceWalkingRunning, nil)
+            }
+        case .walking:
+            if #available(iOS 14.0, *) {
+                return (.distanceWalkingRunning, .walkingSpeed)
+            } else {
+                return (.distanceWalkingRunning, nil)
+            }
+        case .cycling:
+            if #available(iOS 17.0, *) {
+                return (.distanceCycling, .cyclingSpeed)
+            } else {
+                return (.distanceCycling, nil)
+            }
+        default:
+            if #available(iOS 16.0, *) {
+                return (.distanceWalkingRunning, .runningSpeed)
+            } else {
+                return (.distanceWalkingRunning, nil)
+            }
+        }
+    }
+
+    private func workoutEventTypeToString(_ type: HKWorkoutEventType) -> String {
+        switch type {
+        case .pause: return "pause"
+        case .resume: return "resume"
+        case .lap: return "lap"
+        case .marker: return "marker"
+        case .motionPaused: return "motionPaused"
+        case .motionResumed: return "motionResumed"
+        case .segment: return "segment"
+        case .pauseOrResumeRequest: return "pauseOrResumeRequest"
+        @unknown default: return "unknown"
+        }
+    }
+
+    private func buildSegmentDict(event: HKWorkoutEvent, duration: TimeInterval, distance: Double?, speed: Double?) -> [String: Any] {
+        var dict: [String: Any] = [
+            "type": workoutEventTypeToString(event.type),
+            "startDate": ISO8601DateFormatter().string(from: event.dateInterval.start),
+            "endDate": ISO8601DateFormatter().string(from: event.dateInterval.end),
+            "duration": duration
+        ]
+
+        if let d = distance {
+            dict["distance"] = d
+        }
+
+        if let s = speed {
+            dict["speed"] = s
+        }
+
+        return dict
+    }
+
+}
+

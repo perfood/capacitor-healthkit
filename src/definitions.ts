@@ -29,6 +29,9 @@ export interface CapacitorHealthkitPlugin {
    * @param queryOptions defines the sampletypes for which you need to check for writing permission.
    */
   multipleIsEditionAuthorized(queryOptions: MultipleEditionQuery): Promise<void>;
+
+  /** This fetches detailed workout information **/
+  fetchDetailedWorkouts(options: FetchDetailedWorkoutsOptions): Promise<WorkoutResponse>;
 }
 
 /**
@@ -163,3 +166,51 @@ export enum SampleNames {
   BLOOD_PRESSURE_SYSTOLIC = 'bloodPressureSystolic',
   BLOOD_PRESSURE_DIASTOLIC = 'bloodPressureDiastolic'
 }
+
+/**
+ * AG: Added for detailed workout statistics
+ */
+export interface WorkoutSegment {
+  type: 'pause' | 'resume' | 'lap' | 'marker' | 'motionPaused' | 'motionResumed' | 'segment' | 'pauseOrResumeRequest' | 'unknown';
+  startDate: string;
+  endDate: string;
+  duration: number;
+}
+
+export interface RouteLocation {
+  latitude: number;
+  longitude: number;
+  altitude: number;
+  timestamp: string;
+}
+
+export interface WorkoutMetrics {
+  heartRate?: { value: number; unit: 'bpm' };
+  runningSpeed?: { value: number; unit: 'm/s' };
+  cyclingPower?: { value: number; unit: 'watt' };
+  route?: RouteLocation[];
+  segments?: WorkoutSegment[];
+}
+
+export interface DetailedWorkoutData {
+  uuid: string;
+  startDate: string;
+  endDate: string;
+  activityType: number;
+  duration: number;
+  source: string;
+  metrics?: WorkoutMetrics; // Now properly typed
+}
+
+export interface WorkoutResponse {
+  workouts: DetailedWorkoutData[];
+}
+
+export interface FetchDetailedWorkoutsOptions {
+  startDate: string;
+  endDate: string;
+  workoutTypes?: string[];  // Optional array of workout type strings
+  limit?: number;           // Optional limit
+}
+
+
