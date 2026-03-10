@@ -4,9 +4,16 @@ export interface CapacitorHealthkitPlugin {
   getAuthorizationStatus(
     options: GetAuthorizationStatusOptions,
   ): Promise<{ status: AuthorizationStatus }>;
-  getStatisticsCollection(options: StatisticsCollectionOptions): Promise<StatisticsCollectionOutput>;
-  getBodyMassEntries(options: BodyMassQueryOptions): Promise<BodyMassQueryOutput>; 
+  getStatisticsCollection(
+    options: StatisticsCollectionOptions,
+  ): Promise<StatisticsCollectionOutput>;
+  getBodyMassEntries(
+    options: BodyMassQueryOptions,
+  ): Promise<BodyMassQueryOutput>;
   getWorkouts(options: WorkoutsQueryOptions): Promise<WorkoutsQueryOutput>;
+  getSleepAnalysis(
+    options: SleepAnalysisQueryOptions,
+  ): Promise<SleepAnalysisOutput>;
 }
 
 export interface RequestAuthorizationOptions {
@@ -80,14 +87,40 @@ export interface WorkoutsQueryOutput {
   }[];
 }
 
+export interface SleepAnalysisQueryOptions {
+  /**
+   * ISO8601 string representing the start date of the query.
+   */
+  startDate: string;
+  /**
+   * ISO8601 string representing the end date of the query. Defaults to now.
+   */
+  endDate?: string;
+  /**
+   * Maximum number of records to return. Defaults to 0 (no limit).
+   */
+  limit?: number;
+}
+
+export interface SleepAnalysisOutput {
+  data: {
+    uuid: string;
+    startDate: string;
+    endDate: string;
+    value: 'INBED' | 'ASLEEP' | 'AWAKE' | 'UNKNOWN';
+    sourceName: string;
+    sourceBundleId: string;
+  }[];
+}
+
 export interface HealthKitDevice {
-  name?: string ;
-  model?: string ;
-  manufacturer?: string ;
-  hardwareVersion?: string ;
-  softwareVersion?: string ;
-  firmwareVersion?: string; 
-  localIdentifier?: string ; 
+  name?: string;
+  model?: string;
+  manufacturer?: string;
+  hardwareVersion?: string;
+  softwareVersion?: string;
+  firmwareVersion?: string;
+  localIdentifier?: string;
   udiDeviceIdentifier?: string;
 }
 

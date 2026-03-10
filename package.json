@@ -1,6 +1,6 @@
 {
   "name": "@perfood/capacitor-healthkit",
-  "version": "2.0.0-alpha.2",
+  "version": "2.0.0-alpha.3",
   "description": "Capacitor plugin to read data from and write data to Apple Health",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -9,7 +9,8 @@
   "files": [
     "dist/",
     "ios/Plugin/",
-    "PerfoodCapacitorHealthkit.podspec"
+    "PerfoodCapacitorHealthkit.podspec",
+    "Package.swift"
   ],
   "author": "Manuel Heidrich",
   "license": "MIT",
@@ -41,22 +42,22 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@capacitor/core": "^5.0.0",
-    "@capacitor/docgen": "^0.0.18",
-    "@capacitor/ios": "^5.0.0",
-    "@ionic/eslint-config": "^0.3.0",
-    "@ionic/prettier-config": "^1.0.1",
-    "@ionic/swiftlint-config": "^1.1.2",
-    "eslint": "^7.11.0",
-    "prettier": "~2.3.0",
-    "prettier-plugin-java": "~1.0.2",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.32.0",
-    "swiftlint": "^1.0.1",
-    "typescript": "^5.2.2"
+    "@capacitor/core": "^8.2.0",
+    "@capacitor/docgen": "^0.3.1",
+    "@capacitor/ios": "^8.2.0",
+    "@ionic/eslint-config": "^0.4.0",
+    "@ionic/prettier-config": "^4.0.0",
+    "@ionic/swiftlint-config": "^2.0.0",
+    "eslint": "^10.0.3",
+    "prettier": "~3.8.1",
+    "prettier-plugin-java": "~2.8.1",
+    "rimraf": "^6.1.3",
+    "rollup": "^4.59.0",
+    "swiftlint": "^2.0.0",
+    "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "@capacitor/core": "^5.0.0"
+    "@capacitor/core": "^8.0.0"
   },
   "prettier": "@ionic/prettier-config",
   "swiftlint": "@ionic/swiftlint-config",

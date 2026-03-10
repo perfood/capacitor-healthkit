@@ -19,6 +19,7 @@ npx cap sync
 * [`getStatisticsCollection(...)`](#getstatisticscollection)
 * [`getBodyMassEntries(...)`](#getbodymassentries)
 * [`getWorkouts(...)`](#getworkouts)
+* [`getSleepAnalysis(...)`](#getsleepanalysis)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
 
@@ -105,6 +106,21 @@ getWorkouts(options: WorkoutsQueryOptions) => Promise<WorkoutsQueryOutput>
 | **`options`** | <code><a href="#workoutsqueryoptions">WorkoutsQueryOptions</a></code> |
 
 **Returns:** <code>Promise&lt;<a href="#workoutsqueryoutput">WorkoutsQueryOutput</a>&gt;</code>
+
+--------------------
+
+
+### getSleepAnalysis(...)
+
+```typescript
+getSleepAnalysis(options: SleepAnalysisQueryOptions) => Promise<SleepAnalysisOutput>
+```
+
+| Param         | Type                                                                            |
+| ------------- | ------------------------------------------------------------------------------- |
+| **`options`** | <code><a href="#sleepanalysisqueryoptions">SleepAnalysisQueryOptions</a></code> |
+
+**Returns:** <code>Promise&lt;<a href="#sleepanalysisoutput">SleepAnalysisOutput</a>&gt;</code>
 
 --------------------
 
@@ -198,6 +214,22 @@ getWorkouts(options: WorkoutsQueryOptions) => Promise<WorkoutsQueryOutput>
 | **`startDate`** | <code>string</code> |
 | **`endDate`**   | <code>string</code> |
 | **`limit`**     | <code>number</code> |
+
+
+#### SleepAnalysisOutput
+
+| Prop       | Type                                                                                                                                                                 |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`data`** | <code>{ uuid: string; startDate: string; endDate: string; value: 'INBED' \| 'ASLEEP' \| 'AWAKE' \| 'UNKNOWN'; sourceName: string; sourceBundleId: string; }[]</code> |
+
+
+#### SleepAnalysisQueryOptions
+
+| Prop            | Type                | Description                                                             |
+| --------------- | ------------------- | ----------------------------------------------------------------------- |
+| **`startDate`** | <code>string</code> | ISO8601 string representing the start date of the query.                |
+| **`endDate`**   | <code>string</code> | ISO8601 string representing the end date of the query. Defaults to now. |
+| **`limit`**     | <code>number</code> | Maximum number of records to return. Defaults to 0 (no limit).          |
 
 
 ### Type Aliases
